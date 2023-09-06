@@ -1,0 +1,447 @@
+#在actions中下载artifacts
+- name: Download artifact
+  id: download-artifact
+  uses: dawidd6/action-download-artifact@v2
+  with:
+    # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
+    # Required, if the artifact is from a different repo
+    # Required, if the repo is private a Personal Access Token with `repo` scope is needed
+    github_token: ${{secrets.GITHUB_TOKEN}}
+    # Optional, workflow file name or ID
+    # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
+    workflow: workflow_name.yml
+    # Optional, the status or conclusion of a completed workflow to search for
+    # Can be one of a workflow conclusion:
+    #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+    # Or a workflow status:
+    #   "completed", "in_progress", "queued"
+    # Use the empty string ("") to ignore status or conclusion in the search
+    workflow_conclusion: success
+    # Optional, will get head commit SHA
+    pr: ${{github.event.pull_request.number}}
+    # Optional, no need to specify if PR is
+    commit: ${{github.event.pull_request.head.sha}}
+    # Optional, will use the specified branch. Defaults to all branches
+    branch: master
+    # Optional, defaults to all types
+    event: push
+    # Optional, will use specified workflow run
+    run_id: 1122334455
+    # Optional, run number from the workflow
+    run_number: 34
+    # Optional, uploaded artifact name,
+    # will download all artifacts if not specified
+    # and extract them into respective subdirectories
+    # https://github.com/actions/download-artifact#download-all-artifacts
+    name: artifact_name
+    # Optional, a directory where to extract artifact(s), defaults to the current directory
+    path: extract_here
+    # Optional, defaults to current repo
+    repo: ${{ github.repository }}
+    # Optional, check the workflow run to whether it has an artifact
+    # then will get the last available artifact from the previous workflow
+    # default false, just try to download from the last one
+    check_artifacts:  false
+    # Optional, search for the last workflow run whose stored an artifact named as in `name` input
+    # default false
+    search_artifacts: false
+    # Optional, choose to skip unpacking the downloaded artifact(s)
+    # default false
+    skip_unpack: false
+    # Optional, choose how to exit the action if no artifact is found
+    # can be one of:
+    #  "fail", "warn", "ignore"
+    # default fail
+    if_no_artifact_found: fail
+
+#缓存cache
+
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+#toolchain make
+###########################################################
+#
+#   Description: Compile OpenWrt by GitHub Actions 
+#
+###########################################################
+
+
+name: toolchain-make
+
+on:
+ # repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      FEEDS_CONF:
+        description: 'Feeds [必选]'
+        default: 'feeds.conf.default'
+      CONFIG_FILE:
+        description: '调用的 [.config] 文件名称'
+        default: 'cr660x.tool'
+      DEFAULT_SOURCE:
+        description: '源码:分支 [必选]'
+        default: 'coolsnowwolf/lede:master'
+  # schedule:
+   # - cron: 36 */3 * * *
+
+env:
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part2.sh
+  #UPLOAD_BIN_DIR: true
+  #UPLOAD_FIRMWARE: false
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    #runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+
+    - name: 环境变量设置
+      run: |
+        FEEDS_CONF=${{ github.event.inputs.FEEDS_CONF }}
+        CONFIG_FILE=${{ github.event.inputs.CONFIG_FILE }}
+        DEFAULT_SOURCE=${{ github.event.inputs.DEFAULT_SOURCE }}    
+        export REPO_URL="https://github.com/$(echo $DEFAULT_SOURCE | cut -d \: -f 1)"
+        export REPO_BRANCH=$(echo $DEFAULT_SOURCE | cut -d \: -f 2)
+        [ -z $REPO_BRANCH ] && REPO_BRANCH=master
+        echo "FEEDS_CONF=$FEEDS_CONF" >> $GITHUB_ENV
+        echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
+        echo "REPO_URL=$REPO_URL" >> $GITHUB_ENV
+        echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
+
+    - name: 安装依赖
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get update
+        sudo -E apt-get -y install build-essential cmake asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libreadline-dev libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint ccache curl wget vim nano python2.7 python3 python3-pip python3-ply haveged lrzsz device-tree-compiler scons antlr3 gperf intltool mkisofs rsync squashfs-tools zstd
+        sudo timedatectl set-timezone "Asia/Shanghai"
+        sudo mkdir -p /workdir && ls
+        sudo chown $USER:$GROUPS /workdir        
+        docker rmi $(docker images -q)
+        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php
+        sudo -E apt-get -y autoremove --purge
+        sudo -E apt-get clean      
+        sudo chown $USER:$GROUPS /workdir
+        echo "Compile_Date=$(date +%Y%m%d%H%M)" > $GITHUB_WORKSPACE/Openwrt.info
+        echo "Display_Date=$(date +%Y/%m/%d)" >> $GITHUB_WORKSPACE/Openwrt.info
+        echo "Openwrt_Repository=$REPO_URL" >> $GITHUB_WORKSPACE/Openwrt.info
+        ls -l
+
+
+    - name: 克隆源码
+      working-directory: /workdir
+      run: |
+        df -hT $PWD
+        git clone -b $REPO_BRANCH $REPO_URL openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        ls -alh
+        rm -rf /workdir/openwrt/feeds.conf.default
+        ls -ahl ./openwrt
+
+
+
+    - name: 更新 feeds
+      run: |
+        cp $FEEDS_CONF ./openwrt/feeds.conf.default
+        ./openwrt/scripts/feeds update -a
+        ./openwrt/scripts/feeds update -a -f
+        chmod +x $DIY_P1_SH
+        $GITHUB_WORKSPACE/$DIY_P1_SH
+
+ 
+    - name: 安装 feeds
+      run: |
+        cd openwrt 
+        df -h && ls
+        ./scripts/feeds install -a
+        ./scripts/feeds install -a -f
+        free -h
+
+
+    - name: 加载自定义 configuration
+      run: |
+        cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE ./openwrt/.config
+        chmod +x $DIY_P2_SH
+        #$GITHUB_WORKSPACE/$DIY_P2_SH
+        echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
+        df -hT && ls -alh && free -h && ls -alh openwrt
+
+    - name: 下载文件
+      id: package
+      run: |
+        cd openwrt
+        make defconfig
+        make download -j$(nproc)
+
+
+    - name: 编译tools/toolchain
+      id: compile
+      run: |
+        cd openwrt && ls
+        #make tools/compile -j$(nproc)
+        make toolchain/compile -j$(nproc)
+        #make -j$(nproc)
+        echo "status=success" >> $GITHUB_OUTPUT
+        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
+        echo "FILE_DATE=$(date +"%Y.%m.%d-%H.%M")" >> $GITHUB_ENV
+        echo "TOOLCHAIN_VERSION=$(echo staging_dir/toolchain*)" >> $GITHUB_ENV
+        make clean
+        ./scripts/feeds clean
+        rm -rf .config* dl tmp logs bin DEVICE_NAME key-build*
+        ls -alh
+        #编译设备名，编译完成时间,清理多余文件
+
+
+
+    - name: 打包toolchain
+      id: toolchain
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      working-directory: /workdir
+      run: |
+        tar -jcf build_dir.tar.bz2 openwrt/build_dir
+        rm -rf openwrt/build_dir
+        tar -jcf openwrt.tar.bz2 openwrt
+        echo "status=success" >> $GITHUB_OUTPUT
+        ls -lh && ls -alh openwrt
+
+
+
+    - name: 上传toolchain到 Release
+      if: steps.toolchain.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
+      uses: ncipollo/release-action@v1
+      with:
+        name: toolchain for ${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        allowUpdates: true
+        replacesArtifacts: true
+        tag: toolchain_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: /workdir/*.bz2
+        body: |
+          * 这是 ${{ env.DEVICE_NAME }} 使用的 OpenWrt toolchain 
+          * toolchain版本 ${{ env.TOOLCHAIN_VERSION }} 
+          * 当前使用源码( ${{ env.REPO_URL }}:${{ env.REPO_BRANCH }} ) 
+
+#toolchain get
+###########################################################
+#
+#   Description: Compile OpenWrt by GitHub Actions 
+#
+###########################################################
+
+
+name: toolchain-get
+
+on:
+ # repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      FEEDS_CONF:
+        description: 'Feeds [必选]'
+        default: 'feeds.conf.default'
+      CONFIG_FILE:
+        description: '调用的 [.config] 文件名称'
+        default: 'cr660x'
+      DEFAULT_SOURCE:
+        description: '源码:分支 [必选]'
+        default: 'coolsnowwolf/lede:master'
+  # schedule:
+   # - cron: 36 */3 * * *
+
+env:
+  DIY_P1_SH: diy-part1.sh
+  DIY_P2_SH: diy-part2.sh
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: false
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
+  OPENWRT_LINK: https://github.com/pornhubgit/lede_cr660x/releases/download/toolchain_xiaomi_mi-router-cr660x_2023.02.02-20.39/openwrt.tar.bz2
+  BUILD_LINK: https://github.com/pornhubgit/lede_cr660x/releases/download/toolchain_xiaomi_mi-router-cr660x_2023.02.02-20.39/build_dir.tar.bz2
+
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    #runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+
+    - name: 环境变量设置
+      run: |
+        FEEDS_CONF=${{ github.event.inputs.FEEDS_CONF }}
+        CONFIG_FILE=${{ github.event.inputs.CONFIG_FILE }}
+        DEFAULT_SOURCE=${{ github.event.inputs.DEFAULT_SOURCE }}    
+        export REPO_URL="https://github.com/$(echo $DEFAULT_SOURCE | cut -d \: -f 1)"
+        export REPO_BRANCH=$(echo $DEFAULT_SOURCE | cut -d \: -f 2)
+        [ -z $REPO_BRANCH ] && REPO_BRANCH=master
+        echo "FEEDS_CONF=$FEEDS_CONF" >> $GITHUB_ENV
+        echo "CONFIG_FILE=$CONFIG_FILE" >> $GITHUB_ENV
+        echo "REPO_URL=$REPO_URL" >> $GITHUB_ENV
+        echo "REPO_BRANCH=$REPO_BRANCH" >> $GITHUB_ENV
+
+    - name: 安装依赖
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get update
+        sudo -E apt-get -y install build-essential cmake asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libreadline-dev libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint ccache curl wget vim nano python2.7 python3 python3-pip python3-ply haveged lrzsz device-tree-compiler scons antlr3 gperf intltool mkisofs rsync zstd
+        sudo timedatectl set-timezone "Asia/Shanghai"
+        sudo mkdir -p /workdir && ls
+        sudo chown $USER:$GROUPS /workdir        
+        docker rmi $(docker images -q)
+        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php
+        sudo -E apt-get -y autoremove --purge
+        sudo -E apt-get clean      
+        sudo chown $USER:$GROUPS /workdir
+        echo "Compile_Date=$(date +%Y%m%d%H%M)" > $GITHUB_WORKSPACE/Openwrt.info
+        echo "Display_Date=$(date +%Y/%m/%d)" >> $GITHUB_WORKSPACE/Openwrt.info
+        echo "Openwrt_Repository=$REPO_URL" >> $GITHUB_WORKSPACE/Openwrt.info
+        ls -alh
+
+
+    - name: 克隆源码
+      working-directory: /workdir
+      run: |
+        wget -q $OPENWRT_LINK
+        wget -q $BUILD_LINK
+        tar -jxf openwrt.tar.bz2
+        tar -jxf build_dir.tar.bz2
+        rm -rf *.bz2
+        #git clone -b $REPO_BRANCH $REPO_URL openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt && ls -lah
+        cd $GITHUB_WORKSPACE/openwrt && ls -lha && df -h
+        #git fetch --all
+        #git reset --hard origin/master
+        git pull
+        rm -rf feeds.conf.default
+ 
+
+
+    - name: 更新 feeds
+      run: |
+        cp $FEEDS_CONF ./openwrt/feeds.conf.default
+        ./openwrt/scripts/feeds update -a
+        ./openwrt/scripts/feeds update -a -f
+        chmod +x $DIY_P1_SH
+        $GITHUB_WORKSPACE/$DIY_P1_SH
+
+
+    - name: 安装 feeds
+      run: |
+        cd openwrt 
+        df -h && ls -alh
+        ./scripts/feeds install -a
+        ./scripts/feeds install -a -f
+        free -h
+
+
+    - name: 加载自定义 configuration
+      run: |
+        cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE ./openwrt/.config
+        chmod +x $DIY_P2_SH
+        $GITHUB_WORKSPACE/$DIY_P2_SH
+        echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
+        df -hT && ls -alh && free -m && ls -alh openwrt
+
+    - name: 下载文件
+      id: package
+      run: |
+        cd openwrt
+        make defconfig
+        make download -j$(nproc)
+
+
+    - name: 编译固件
+      id: compile
+      run: |
+        cd openwrt && ls
+        #make -j$(nproc) 
+        make target/compile -j$(nproc)
+        make package/compile -j$(nproc)
+        make package/index
+        make package/install -j$(nproc)
+        make target/install -j$(nproc)
+        make json_overview_image_info
+        make checksum
+        echo "status=success" >> $GITHUB_OUTPUT
+        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
+        echo "FILE_DATE=$(date +"%Y.%m.%d-%H.%M")" >> $GITHUB_ENV
+        ls -alh staging_dir
+        #编译设备名，编译完成时间
+
+    - name: 检查磁盘空间
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      run: |
+       df -hT
+       cp $GITHUB_WORKSPACE/Openwrt.info ./openwrt/bin/Openwrt.info
+       cd openwrt/bin/targets/*/*/ && ls
+       echo "VERSION_INFO=$(cat *.manifest |grep -o "kernel.*")" >> $GITHUB_ENV
+
+    - name: 上传 bin
+      uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true' && !cancelled()
+      with:
+        name: OpenWrt_bin_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        path: openwrt/bin
+
+    - name: 整理文件
+      id: organize
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      run: |
+        cd openwrt/bin/targets/*/*/
+        rm -rf packages
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: 上传固件
+      uses: actions/upload-artifact@main
+      if: steps.organize.outputs.status == 'success' && env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      with:
+        name: OpenWrt_firmware_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE }}
+
+
+    - name: 发布固件到 Release
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
+      uses: ncipollo/release-action@v1
+      with:
+        name: openwrt for ${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        allowUpdates: true
+        replacesArtifacts: true
+        tag: ${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ${{ env.FIRMWARE }}/*
+        body: |
+          * 这是 ${{ env.DEVICE_NAME }} 使用的 OpenWrt 固件
+          * 默认 IP：192.168.5.1 默认密码：password
+          * 当前使用版本:源码( ${{ env.REPO_URL }}:${{ env.REPO_BRANCH }} )
+          * ${{ env.VERSION_INFO }}
+
+
+####
