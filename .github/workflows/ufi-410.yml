@@ -94,7 +94,7 @@ jobs:
       working-directory: /workdir
       run: |
         df -hT $PWD
-        git clone -b $REPO_BRANCH $REPO_URL openwrt
+        #git clone -b $REPO_BRANCH $REPO_URL openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
         rm -rf /workdir/openwrt/feeds.conf.default
@@ -139,16 +139,16 @@ jobs:
       id: compile
       run: |
         cd openwrt && ls
-        make tools/compile -j$(nproc) 
-        make toolchain/compile -j$(nproc) 
+        #make tools/compile -j$(nproc) 
+        #make toolchain/compile -j$(nproc) 
         #make -j$(nproc)  
-        #make target/compile -j$(nproc)
-        #make package/compile -j$(nproc) 
-        #make package/index
-        #make package/install -j$(nproc) 
-        #make target/install -j$(nproc) 
-        #make json_overview_image_info
-        #make checksum
+        make target/compile -j$(nproc)
+        make package/compile -j$(nproc) 
+        make package/index
+        make package/install -j$(nproc) 
+        make target/install -j$(nproc) 
+        make json_overview_image_info
+        make checksum
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
@@ -160,8 +160,8 @@ jobs:
       run: |
        df -hT
        cp $GITHUB_WORKSPACE/Openwrt.info ./openwrt/bin/Openwrt.info
-       #cd openwrt/bin/targets/*/*/ && ls
-       #echo "VERSION_INFO=$(cat *.manifest |grep -o "kernel -.*")" >> $GITHUB_ENV
+       cd openwrt/bin/targets/*/*/ && ls
+       echo "VERSION_INFO=$(cat *.manifest |grep -o "kernel -.*")" >> $GITHUB_ENV
 
       
       
@@ -176,7 +176,7 @@ jobs:
       if: steps.compile.outputs.status == 'success' && !cancelled()
       working-directory: /workdir
       run: |
-        #cd openwrt/bin/targets/*/*/ && ls
+        cd openwrt/bin/targets/*/*/ && ls
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
 
