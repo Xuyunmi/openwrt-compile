@@ -16,7 +16,7 @@ on:
         default: 'feeds.conf.default'
       CONFIG_FILE:
         description: '调用的 [.config] 文件名称'
-        default: 'cr660x'
+        default: 'cr660x.old'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
         default: 'coolsnowwolf/lede:master'
