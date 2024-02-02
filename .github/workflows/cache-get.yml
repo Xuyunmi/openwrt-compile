@@ -26,8 +26,10 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     #runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+
 
     steps:
     - name: Checkout
@@ -171,7 +173,7 @@ jobs:
 
     - name: 发布固件到 Release
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v1.12.0
       with:
         name: openwrt for ${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
         allowUpdates: true
@@ -184,3 +186,5 @@ jobs:
           * 默认 IP：192.168.5.1 默认密码：password
           * 当前使用版本:【源码( ${{ env.REPO_URL }}:${{ env.REPO_BRANCH }} )】
           * ${{ env.VERSION_INFO }}
+          
+
