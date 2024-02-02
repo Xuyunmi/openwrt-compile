@@ -35,6 +35,8 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     #runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+
 
     steps:
     - name: Checkout
@@ -165,7 +167,7 @@ jobs:
 
     - name: 发布固件到 Release
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true' && !cancelled()
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v1.12.0
       with:
         name: openwrt for ${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
         allowUpdates: true
