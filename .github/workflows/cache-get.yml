@@ -180,7 +180,7 @@ jobs:
         replacesArtifacts: true
         tag: ${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: ${{ env.FIRMWARE }}/*
+        artifacts: ${{ env.FIRMWARE }}/*.*
         body: |
           * 这是 ${{ env.DEVICE_NAME }} 使用的 OpenWrt 固件
           * 默认 IP：192.168.5.1 默认密码：password
