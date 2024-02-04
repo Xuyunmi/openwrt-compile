@@ -89,9 +89,9 @@ jobs:
         #git clone -b $REPO_BRANCH $REPO_URL openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
-        rm -rf /workdir/openwrt/feeds.conf.default
         cd ./openwrt
         git pull
+        rm -rf /workdir/openwrt/feeds.conf.default
 
     - name: 更新 feeds
       run: |
