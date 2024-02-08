@@ -28,7 +28,7 @@ cp -rf banner openwrt/package/base-files/files/etc/banner
 #更换主题背景
 cp -rf extra/bg1.jpg openwrt/feeds/kenzo/luci-theme-argone/htdocs/luci-static/argone/img/bg1.jpg
 rm -rf openwrt/feeds/kenzo/luci-theme-argone/README.md
-cp -rf extra/main_bg.jpg openwrt/feeds/kenzo/luci-theme-ifit/files/htdocs/images/main_bg.jpg
-cp -rf extra/main_bg_5k.jpg openwrt/feeds/kenzo/luci-theme-ifit/files/htdocs/images/main_bg_5k.jpg
+#cp -rf extra/main_bg.jpg openwrt/feeds/kenzo/luci-theme-ifit/files/htdocs/images/main_bg.jpg
+#cp -rf extra/main_bg_5k.jpg openwrt/feeds/kenzo/luci-theme-ifit/files/htdocs/images/main_bg_5k.jpg
 #更换主题neobird快捷应用栏
 #sed -i 's/shadowsocksr/vssr/g' openwrt/feeds/kenzo/luci-theme-neobird/luasrc/view/themes/neobird/header.htm
