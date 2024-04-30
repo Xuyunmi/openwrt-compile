@@ -26,7 +26,7 @@ on:
 env:
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
-  UPLOAD_BIN_DIR: false
+  UPLOAD_BIN_DIR: true
   UPLOAD_RELEASE: false
   TZ: Asia/Shanghai
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -81,22 +81,13 @@ jobs:
         echo "Openwrt_Repository=$REPO_URL" >> $GITHUB_WORKSPACE/Openwrt.info
         ls && df -h
 
-    - name: 缓存编译
-      id: cachebuild
-      uses: actions/cache@v3
-      #env:
-        #cache-name: cache-openwrt-lede
-      with:
-        path: /workdir/openwrt
-        key: ${{env.DEFAULT_SOURCE}}-${{env.CONFIG_FILE}}
-        restore-keys: ${{env.CONFIG_FILE}}
         
         
     - name: 克隆源码
       working-directory: /workdir
       run: |
         df -hT $PWD
-        #git clone -b $REPO_BRANCH $REPO_URL openwrt
+        git clone -b $REPO_BRANCH $REPO_URL openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
         rm -rf /workdir/openwrt/feeds.conf.default
@@ -125,7 +116,7 @@ jobs:
       run: |
         cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE ./openwrt/.config
         chmod +x $DIY_P2_SH
-        #$GITHUB_WORKSPACE/$DIY_P2_SH
+        $GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
         df -hT && ls && free -m && ls openwrt
 
@@ -140,17 +131,8 @@ jobs:
     - name: 编译固件
       id: compile
       run: |
-        cd openwrt && ls
-        #make tools/compile -j$(nproc) 
-        #make toolchain/compile -j$(nproc) 
-        #make -j$(nproc)  
-        make target/compile -j$(nproc)
-        make package/compile -j$(nproc) 
-        make package/index
-        make package/install -j$(nproc) 
-        make target/install -j$(nproc) 
-        make json_overview_image_info
-        make checksum
+        cd openwrt && ls 
+        make -j$(nproc)  
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
