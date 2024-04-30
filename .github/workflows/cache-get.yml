@@ -131,7 +131,16 @@ jobs:
       id: compile
       run: |
         cd openwrt && ls
-        make -j$(nproc) 
+        #make tools/compile -j$(nproc) 
+        #make toolchain/compile -j$(nproc) 
+        #make -j$(nproc) 
+        make target/compile -j$(nproc)
+        make package/compile -j$(nproc)
+        make package/index
+        make package/install -j$(nproc) V=s
+        make target/install -j$(nproc)
+        make json_overview_image_info
+        make checksum
         echo "status=success" >> $GITHUB_OUTPUT
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
