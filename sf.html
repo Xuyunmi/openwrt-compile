@@ -1,0 +1,971 @@
+
+<!DOCTYPE HTML>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="applicable-device" content="pc,mobile">
+    <meta http-equiv="Cache-Control" content="no-transform " />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+        <title>OpenWrt 固件自编译教程：从入门到酸爽！ - 喵斯基部落</title>
+    <meta name="author" content="MoeWah" />
+    <meta name="description" content="说明： 之前陆陆续续使用过不少基于 OpenWrt 编译的固件都差强人意，不是插件太多了就是少了自己需要的插件。而如今有了群晖 DS920+ 配备了 12..." />
+    <meta name="keywords" content="软路由,OpenWrt" />
+
+<link rel="stylesheet" href="https://www.moewah.com/usr/plugins/ExSearch/assets/ExSearch-391ac63801.css">
+<!--插件配置-->
+<script>
+ExSearchConfig = {
+    root : "",
+    api : "https://www.moewah.com/usr/plugins/ExSearch/cache/cache-9cd114e2e63c25783f27171ae6bc5569.json"
+}
+</script>
+        <meta property="og:title" content="OpenWrt 固件自编译教程：从入门到酸爽！ - 喵斯基部落" />
+    <meta property="og:description" content="说明： 之前陆陆续续使用过不少基于 OpenWrt 编译的固件都差强人意，不是插件太多了就是少了自己需要的插件。而如今有了群晖 DS920+ 配备了 12..." />
+    <meta property="og:site_name" content="喵斯基部落" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://www.moewah.com/archives/4003.html" />
+    <meta property="og:image" content="https://www.moewah.com/usr/uploads/2021/07/2156866513.png" />
+    <meta property="article:published_time" content="2021-07-16T23:41:00+08:00" />
+    <meta property="article:modified_time" content="2022-12-14T11:13:41+08:00" />
+    <meta property="bytedance:published_time" content="2021-07-16T23:41:00+08:00" />
+    <meta property="bytedance:updated_time" content="2022-12-14T11:13:41+08:00" />
+    <meta name="twitter:title" content="OpenWrt 固件自编译教程：从入门到酸爽！ - 喵斯基部落" />
+    <meta name="twitter:description" content="说明： 之前陆陆续续使用过不少基于 OpenWrt 编译的固件都差强人意，不是插件太多了就是少..." />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@#" />
+    <meta name="twitter:creator" content="@#" />
+    <meta name="twitter:image" content="https://www.moewah.com/usr/uploads/2021/07/2156866513.png" /> 
+    <!--canonical-->
+        <link rel="canonical" href="https://www.moewah.com/archives/4003.html">
+    
+    <!--CSS-->
+    <link rel="stylesheet" href="https://www.moewah.com/usr/themes/VOID/assets/bundle-1e9bf597b1.css">
+    <link rel="stylesheet" href="https://www.moewah.com/usr/themes/VOID/assets/VOID-8a7b574153.css">
+
+    <!--JS-->
+    <script src="https://www.moewah.com/usr/themes/VOID/assets/bundle-header-9977c8fbf5.js"></script>
+    <script>
+    VOIDConfig = {
+        PJAX : false,
+        searchBase : "https://www.moewah.com/search/",
+        home: "https://www.moewah.com/",
+        buildTime : "2017-09-05T09:40",
+        enableMath : false,
+        lazyload : true,
+        colorScheme:  1,
+        headerMode: 0,
+        followSystemColorScheme: true,
+        VOIDPlugin: true,
+        votePath: "https://www.moewah.com/action/void?",
+        lightBg: "",
+        darkBg: "",
+        lineNumbers: true,
+        darkModeTime: {
+            'start': 18.5,
+            'end': 7.5        },
+        horizontalBg: false,
+        verticalBg: false,
+        indexStyle: 1,
+        version: 3.51,
+        isDev: true
+    }
+    </script>
+    <script src="https://www.moewah.com/usr/themes/VOID/assets/header-dba1d6f214.js"></script>
+
+    <script type="text/javascript">
+    var windowWidth = $(window).width();
+    if(windowWidth > 768){
+	window.onload = function() {
+	setTimeout(function() {
+	let script = document.createElement("script");
+	script.setAttribute("async", "");
+	script.src = "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2714096971819819";
+	document.body.appendChild(script);
+	}, 2e3);
+	}
+    }
+</script>    <style>
+                @media screen and (min-width: 768px){
+            main>.lazy-wrap{min-height: 65vh;}
+        }
+        
+                @media screen and (max-width: 768px){
+            main>.lazy-wrap{min-height: 65vh;}
+        }
+            </style>
+
+        <style>
+    @font-face {
+        font-family: "BrandFont";
+        src: url("https://www.moewah.com/usr/fonts/GaoDuanHeiXiuDing151105-1.woff");
+    }
+    .brand {
+        font-family: BrandFont, sans-serif;
+        font-style: normal!important;
+        font-weight: normal!important;
+    }
+    </style>
+    
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap" rel="stylesheet">
+    
+            <link href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap" rel="stylesheet">
+        <style>.yue code, .yue tt {font-family: "Fira Code", Menlo, Monaco, Consolas, "Courier New", monospace}</style>
+    
+    </head>
+
+<body fontsize="2" class=" macStyleCodeBlock line-numbers single-col lazyload-img">
+    
+    <header class="header-mode-0 ">
+        <div class="container wider">
+            <nav>
+                <a role=button aria-label="展开导航" class="toggle" target="_self" href="javascript:void(0);" onclick="VOID_Ui.toggleNav(this);">
+                    <span></span>
+                </a>
+                <a class="brand" href="https://www.moewah.com/">喵斯基部落</a>
+                <a href="https://www.moewah.com/">首页</a>
+                <span class="dropdown">分类
+                    <ul>
+                        <li><a href="https://www.moewah.com/web/">建站技术</a></li><li><a href="https://www.moewah.com/itom/">运维技术</a></li><li><a href="https://www.moewah.com/synology/">群晖NAS</a></li><li><a href="https://www.moewah.com/typecho/">typecho</a></li><li><a href="https://www.moewah.com/seo/">seo优化</a></li><li><a href="https://www.moewah.com/google-ads/">谷歌联盟</a></li><li><a href="https://www.moewah.com/share/">干货分享</a></li>                    </ul>
+                </span>
+                <a href="https://www.moewah.com/archives.html">归档</a><a href="https://www.moewah.com/comment.html">留言</a>                                <span class="dropdown">其它                    <ul>
+                        <li><a target="_blank" href="https://monitor.moewah.com">服务监控</a></li><li><a target="_blank" href="https://umami.moewah.com">流量统计</a></li>                    </ul>
+                </span>
+                                                <a class="search-form-input" style="display:flex" 
+                    role=button aria-label="展开搜索" id="toggle-mobile-search" target="_self" 
+                    href="javascript:void(0);" 
+                    onclick="">
+                    <i class="voidicon-search"></i>
+                </a>
+                <a target="_self" href="javascript:void(0);" id="toggle-setting" onclick="VOID_Ui.toggleSettingPanel();"><i class="voidicon-cog"></i></a>
+            </nav>
+        </div>
+        <div class="mobile-search-form">
+            <label for="search_new">搜索</label>
+            <input onkeydown="VOID.enterSearch(this);" type="text" name="search-content" id="search_new" required placeholder="输入内容然后 Go!" />
+            <button onclick="VOID.startSearch('#search_new');">Go!</button>
+        </div>
+    </header>
+    <div id="nav-mobile">
+        <section id="pages" data-title="PAGES">
+            <nav>
+                <a href="https://www.moewah.com/archives.html">归档</a><a href="https://www.moewah.com/comment.html">留言</a>            </nav>
+        </section>
+        <section id="categories" data-title="CATEGORIES">
+            <nav>
+                <a href="https://www.moewah.com/web/">建站技术</a><a href="https://www.moewah.com/itom/">运维技术</a><a href="https://www.moewah.com/synology/">群晖NAS</a><a href="https://www.moewah.com/typecho/">typecho</a><a href="https://www.moewah.com/seo/">seo优化</a><a href="https://www.moewah.com/google-ads/">谷歌联盟</a><a href="https://www.moewah.com/share/">干货分享</a>            </nav>
+        </section>
+                <section data-title="其它">
+            <nav>
+                <a target="_blank" href="https://monitor.moewah.com">服务监控</a><a target="_blank" href="https://umami.moewah.com">流量统计</a>            </nav>
+        </section>
+            </div>
+
+<main id="pjax-container">
+    <title hidden>
+        OpenWrt 固件自编译教程：从入门到酸爽！ - 喵斯基部落    </title>
+
+    
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "喵斯基部落",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://gravatar.loli.net/avatar/a67751f4d5eb1b52de42ee7655cc6c11?s=200&amp;r=&amp;d="
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "MoeWah",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://gravatar.loli.net/avatar/a67751f4d5eb1b52de42ee7655cc6c11?s=400&amp;r=&amp;d=",
+            "width": 400,
+            "height": 400
+        },
+        "url": "https://www.moewah.com/author/1/"
+    },
+    "headline": "OpenWrt 固件自编译教程：从入门到酸爽！ - 喵斯基部落",
+    "url": "https://www.moewah.com/archives/4003.html",
+    "datePublished": "2021-07-16T23:41:00+08:00",
+    "dateModified": "2022-12-14T11:13:41+08:00",
+    "image": {
+        "@type": "ImageObject",
+                "url": "https://www.moewah.com/usr/uploads/2021/07/2156866513.png"
+    },
+    "description": "",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.moewah.com/"
+    }
+}
+</script>
+    
+<div class="lazy-wrap
+     loading dark">
+
+            <div id="banner" class="blur">
+                        <img class="lazyload" data-src="https://www.moewah.com/usr/uploads/2021/07/2156866513.png">
+        </div>
+        <script>$('body>header').removeClass('force-dark').removeClass('no-banner');</script>
+    
+            <div class="banner-title">
+            <h1 class="post-title">
+                                    OpenWrt 固件自编译教程：从入门到酸爽！                            </h1>
+                            <p class="post-meta">
+                    			<span><a href="https://www.moewah.com/itom/">运维技术</a></span>&nbsp;•&nbsp;                        <time datetime="2021-07-16T23:41:00+08:00">2021-07-16</time>
+                        &nbsp;•&nbsp;<a no-pjax target="_self" href="javascript:void(0);" onclick="VOID_SmoothScroller.scrollTo('#comments', -60)">40&nbsp;评论</a>
+                        &nbsp;•&nbsp;<span>59891&nbsp;阅读</span>                                                            </p>
+                    </div>
+    </div>
+
+    <div class="wrapper container">
+        <div class="contents-wrap"> <!--start .contents-wrap-->
+            <section id="post" class="float-up">
+                <article class="post yue">
+
+                                            <p class="notice">请注意，本文编写于 1019 天前，最后修改于 503 天前，其中某些信息可能已经过时。</p>
+                    
+                    <div class="articleBody" class="full">
+                        <p><strong>说明：</strong> 之前陆陆续续使用过不少基于 OpenWrt 编译的固件都差强人意，不是插件太多了就是少了自己需要的插件。而如今有了群晖 DS920+ 配备了 12GB 的内存条件，想过自行定制插件编译固件作为旁路由使用，也才有了今天的文章。</p><p><figure class="size-parsed" style="flex-grow: 107.5; width: 860px" ><a style="padding-top: 46.511627906977%" class="lazyload-container"  no-pjax data-fancybox="gallery" data-caption="openwrt.png" href="https://www.moewah.com/usr/uploads/2021/07/2156866513.png#vwid=860&vhei=400" target="_blank" ><img class="lazyload" alt="openwrt.png" data-src="https://www.moewah.com/usr/uploads/2021/07/2156866513.png#vwid=860&vhei=400" src=""></a></figure></p><p>个人非常不建议在国内的本地环境进行固件编译（自备美国区富强全局模式），若非使用 GitHub Actions 进行云编译，那么我强烈推荐首选存储空间不要少于 40GB 的美国区 VPS 作为编译环境，我遇到的很多坑都是墙大环境造成的，以此为鉴。</p><p><figure class="size-parsed" style="flex-grow: 75.964391691395; width: 1024px" ><a style="padding-top: 65.8203125%" class="lazyload-container"  no-pjax data-fancybox="gallery" data-caption="openwrt_gowah-1.png" href="https://www.moewah.com/usr/uploads/2021/07/921593386.png#vwid=1024&vhei=674" target="_blank" ><img class="lazyload" alt="openwrt_gowah-1.png" data-src="https://www.moewah.com/usr/uploads/2021/07/921593386.png#vwid=1024&vhei=674" src=""></a></figure><br><figure class="size-parsed" style="flex-grow: 75.964391691395; width: 1024px" ><a style="padding-top: 65.8203125%" class="lazyload-container"  no-pjax data-fancybox="gallery" data-caption="openwrt_gowah.png" href="https://www.moewah.com/usr/uploads/2021/07/1972042919.png#vwid=1024&vhei=674" target="_blank" ><img class="lazyload" alt="openwrt_gowah.png" data-src="https://www.moewah.com/usr/uploads/2021/07/1972042919.png#vwid=1024&vhei=674" src=""></a></figure></p><h2 id="toc_0">编译环境准备</h2><h3 id="toc_1">创建用户</h3><p>不推荐使用<code>root</code>用户进行编译，所以先使用<code>root</code>权限创建一个用户，以创建<code>helloworld</code>用户为例。</p><pre><code># 添加用户
+adduser helloworld</code></pre><p>为新用户设置密码</p><pre><code>passwd helloworld</code></pre><p>为该用户指定命令解释程序</p><pre><code>usermod -s /bin/bash helloworld</code></pre><p>为该用户添加<code>sudo</code>权限</p><pre><code>chmod u+w /etc/sudoers</code></pre><p>因<code>/etc/sudoers</code>文件默认是只读文件，因此需先添加<code>sudoers</code>文件的写权限</p><pre><code>chmod u+w /etc/sudoers</code></pre><p>编辑 <code>sudoers</code> 文件</p><pre><code>vim /etc/sudoers 
+
+#找到这行 root ALL=(ALL) ALL 追加新行
+helloworld ALL=(ALL:ALL) ALL</code></pre><p>保存修改后，安全考虑建议撤销 <code>sudoers</code> 文件写权限</p><pre><code>chmod u-w /etc/sudoers</code></pre><p>创建新用户会自动创建一个以用户名命名的新目录，需要为新目录添加读写权限</p><pre><code>chown helloworld:helloworld -R /home/helloworld/</code></pre><p>从<code>root</code>用户切换使用新用户</p><pre><code># 运行两次，并输入新用户的密码进行切换
+su helloworld</code></pre><p>从此刻开始，以非<code>root</code>用户执行编译过程的所有操作。</p><h3 id="toc_2">更新本地环境</h3><pre><code># 更新软件列表、升级软件包
+sudo sh -c &quot;apt update &amp;&amp; apt upgrade -y&quot;</code></pre><h3 id="toc_3">安装依赖</h3><p>ubuntu 20.04 （推荐系统），安装依赖</p><pre><code>sudo apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget curl swig rsync</code></pre><p>ubuntu 18.04 安装依赖</p><pre><code>sudo apt-get -y install build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs gcc-multilib g++-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler antlr3 gperf wget swig rsync</code></pre><h2 id="toc_4">首次编译步骤</h2><blockquote>不要使用 <code>root</code> 用户！</blockquote><h3 id="toc_5">拉取源码</h3><p>拉取源码到编译环境</p><pre><code>git clone https://github.com/coolsnowwolf/lede.git openwrt</code></pre><h3 id="toc_6">添加自定义源</h3><p><strong>注：</strong>以下是自己正在使用的软件源，这里你也可以换成自己喜欢的软件源</p><pre><code># 进入openwrt目录
+cd ~/openwrt
+
+# 添加自定义源
+cat &gt;&gt; feeds.conf.default &lt;&lt;EOF
+src-git kenzo https://github.com/kenzok8/openwrt-packages
+src-git passwall https://github.com/xiaorouji/openwrt-passwall
+EOF</code></pre><p>更新下载软件仓库的源码到本地，并安装自定义源包含的软件包</p><pre><code>./scripts/feeds update -a &amp;&amp; ./scripts/feeds install -a</code></pre><h3 id="toc_7">单独添加软件包（可选项）</h3><p>如果需要单独添加软件，请拉取源码到 package  目录之下。示例如下：</p><pre><code># 添加 OpenAppFilter 应用过滤插件
+git clone https://github.com/destan19/OpenAppFilter package/OpenAppFilter</code></pre><h3 id="toc_8">设置默认主题（可选项）</h3><p>注：此操作请在编译前执行，设置 argon 为默认主题，以此为例举一反三</p><pre><code># 删除自定义源默认的 argon 主题
+rm -rf package/lean/luci-theme-argon
+
+# 部分第三方源自带 argon 主题，上面命令删除不掉的请运行下面命令
+find ./ -name luci-theme-argon | xargs rm -rf;
+
+# 针对 LEDE 项目拉取 argon 原作者的源码
+git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/lean/luci-theme-argon
+
+# 替换默认主题为 luci-theme-argon
+sed -i 's/luci-theme-bootstrap/luci-theme-argon/' feeds/luci/collections/luci/Makefile</code></pre><h3 id="toc_9">设置路由器默认的 LAN IP（可选项）</h3><p>注：此操作请在编译前执行</p><pre><code># 设置默认IP为 192.168.199.1
+sed -i 's/192.168.1.1/192.168.199.1/g' package/base-files/files/bin/config_generate</code></pre><h3 id="toc_10"><strong>仅制作.config文件，无需本地编译固件</strong>（可选项）</h3><p>根据自己的定制需求，调整 <a href="https://www.moewah.com/tag/openwrt/"target="_self" title="Open­Wrt">Open­Wrt</a> 系统组件</p><pre><code>make menuconfig</code></pre><p>通过以下命令行获得 <code>seed.config</code>配置文件，然后使用 GitHub Actions 云编译。</p><pre><code># 若在调整OpenWrt系统组件的过程有多次保存操作，则建议先删除.config.old文件再继续操作
+rm -f .config.old
+
+# 根据编译环境生成默认配置
+make defconfig
+
+# 对比默认配置的差异部分生成配置文件（可以理解为增量）
+./scripts/diffconfig.sh &gt; seed.config</code></pre><h3 id="toc_11"><strong>若需要编译固件</strong></h3><p>根据自己的定制需求，调整 <a href="https://www.moewah.com/tag/openwrt/"target="_self" title="Open­Wrt">Open­Wrt</a> 系统组件</p><pre><code>make menuconfig</code></pre><p>下载编译所需的软件包</p><pre><code>make download -j8 V=s</code></pre><p>编译 OpenWrt 固件</p><pre><code># -j1：单线程编译
+make -j1 V=s</code></pre><p>单线程编译可提高编译成功率，但过程非常漫长，也完全取决于机器的性能。编译完成后固件输出路径： <code>/openwrt/bin/targets/</code>之下。</p><h2 id="toc_12">二次编译步骤</h2><blockquote>不要使用 <code>root</code> 用户！</blockquote><p>更新本地编译环境</p><pre><code># 更新软件列表、升级软件包
+sudo sh -c &quot;apt update &amp;&amp; apt upgrade -y&quot;
+
+# 拉取最新源码
+cd ~/openwrt &amp;&amp; git pull
+
+# 更新下载安装订阅源包含的软件包
+cd ~/openwrt 
+./scripts/feeds update -a &amp;&amp; ./scripts/feeds install -a</code></pre><p>清理旧文件</p><pre><code># 删除/bin和/build_dir目录中的文件
+make clean</code></pre><p>如果要更换架构，例如要从 <code>x86_64</code> 换到 <code>MediaTek Ralink MIPS</code> 建议执行以下命令深度清理<code>/bin</code>和<code>/build_dir</code>目录的中的文件(<code>make clean</code>)以及<code>/staging_dir</code>、<code>/toolchain</code>、<code>/tmp</code>和<code>/logs</code>中的文件。</p><pre><code>make dirclean</code></pre><p>如果需要对组件重新调整，则建议先删除旧配置</p><pre><code>rm -rf ./tmp &amp;&amp; rm -rf .config</code></pre><p>根据自己的定制需求，再次调整 Open­Wrt 系统组件</p><pre><code>make menuconfig</code></pre><p>下载编译所需的软件包</p><pre><code>make download -j8 V=s</code></pre><p>编译 OpenWrt 固件</p><pre><code>make -j$(nproc) || make -j1 || make -j1 V=s</code></pre><p>二次编译可以优先使用多线程，报错会自动使用单线程，仍然报错会单线程执行编译并输出详细日志。</p><h2 id="toc_13">附加内容</h2><p>如果没有特殊的定制需求，运行<code>make menuconfig</code>命令配置目标架构完成后，进入 <code>LUCI --&gt; Applications</code> 选择需要的插件，进入 <code>LUCI --&gt; Themes</code> 选择喜欢的主题皮肤，编译即可。</p><p>如果是硬路由且需要闭源的 Wi-Fi 驱动，务必记得勾选<code>luci-app-mtwifi</code></p><h3 id="toc_14">1. x86_64 平台</h3><pre><code>Target System (x86)  ---&gt; 
+Subtarget (x86_64)  ---&gt;  
+Target Profile (Generic x86/64)  ---&gt; </code></pre><p>无特殊需求，那么 <code>Target Images</code> 勾选</p><pre><code>[*] squashfs (NEW) 
+[*] Build GRUB images (Linux x86 or x86_64 host only) (NEW)
+[*] GZip images (NEW)</code></pre><p>自定义固件大小</p><pre><code>(32) Kernel partition size (in MB) (NEW) 
+(400) Root filesystem partition size (in MB) (NEW) </code></pre><p>如果因为勾选基于 EXT4 文件系统编译固件而造成编译报错，建议调高<code>Root filesystem partition size</code></p><h3 id="toc_15">2. 常用插件列表</h3><p>在调整 OpenWrt 系统组件时：<code>[*] </code>表示编译软件包并加入到固件；<code>[M]</code> 表示编译软件包但不加入固件；<code>[ ]</code>则表示不对软件包进行任何设置。</p><pre><code>## 插件类
+LuCI ---&gt; Applications ---&gt; luci-app-accesscontrol #上网时间控制
+LuCI ---&gt; Applications ---&gt; luci-app-adbyby-plus   #去广告
+LuCI ---&gt; Applications ---&gt; luci-app-arpbind  #IP/MAC绑定
+LuCI ---&gt; Applications ---&gt; luci-app-autoreboot  #高级重启
+LuCI ---&gt; Applications ---&gt; luci-app-aliddns   #阿里DDNS客户端
+LuCI ---&gt; Applications ---&gt; luci-app-ddns   #动态域名 DNS 
+LuCI ---&gt; Applications ---&gt; luci-app-filetransfer  #文件传输
+LuCI ---&gt; Applications ---&gt; luci-app-firewall   #添加防火墙
+LuCI ---&gt; Applications ---&gt; luci-app-frpc   #内网穿透 Frp
+LuCI ---&gt; Applications ---&gt; luci-app-mwan3   #MWAN负载均衡
+LuCI ---&gt; Applications ---&gt; luci-app-nlbwmon   #网络带宽监视器
+LuCI ---&gt; Applications ---&gt; luci-app-ramfree  #释放内存
+LuCI ---&gt; Applications ---&gt; luci-app-samba   #网络共享(Samba)
+LuCI ---&gt; Applications ---&gt; luci-app-sqm  #流量智能队列管理(QOS)
+LuCI ---&gt; Applications ---&gt; luci-app-openclash #你懂的那只猫
+LuCI ---&gt; Applications ---&gt; luci-app-dnsfilter #广告过滤
+LuCI ---&gt; Applications ---&gt; luci-app-passwall #不敢解释
+LuCI ---&gt; Applications ---&gt; luci-app-mtwifi #闭源Wi-Fi驱动
+LuCI ---&gt; Applications ---&gt; luci-app-eqos #根据IP控制网速
+LuCI ---&gt; Applications ---&gt; luci-app-syncdial #薛定谔的多拨应用
+LuCI ---&gt; Applications ---&gt; luci-app-zerotier #虚拟局域网
+LuCI ---&gt; Applications ---&gt; luci-app-oaf #应用过滤神器
+LuCI ---&gt; Applications ---&gt; luci-app-watchcat #断网检测功能与定时重启
+LuCI ---&gt; Applications ---&gt; luci-app-wol   #WOL网络唤醒
+LuCI ---&gt; Applications ---&gt; luci-app-wrtbwmon  #实时流量监测
+LuCI ---&gt; Applications ---&gt; luci-app-upnp   #通用即插即用UPnP(端口自动转发)
+LuCI ---&gt; Applications ---&gt; luci-app-argon-config #Argon主题设置
+
+# 常用主题类
+LuCI ---&gt; Themes ---&gt; luci-theme-argon 
+
+# 网络相关 (普通用户用不上）
+Network ---&gt; IP Addresses and Names ---&gt; ddns-scripts_cloudflare.com-v4
+Network ---&gt; IP Addresses and Names ---&gt;  bind-dig
+Network ---&gt; Routing and Rediction ---&gt; ip-full
+Network ---&gt; File Transfer ---&gt; curl
+Network ---&gt; File Transfer ---&gt; wget-ssl
+Network ---&gt; iperf3
+Network ---&gt; ipset
+Network ---&gt; socat #多功能的网络工具
+Base system --&gt; dnsmasq-full #DNS缓存和DHCP服务（dnsmasq-full和dnsmasq二者不可共存）
+
+# 工具类 (普通用户用不上）
+Utilities --&gt; acpid  #电源管理接口（适用于x86平台）
+Utilities --&gt; Editors --&gt; nano #Nano 编辑器
+Utilities --&gt; Shells --&gt; bash #命令解释程序
+Utilities --&gt; disc --&gt; eject #弹出可移动介质
+Utilities --&gt; disc --&gt; fdisk #MBR分区工具
+Utilities --&gt; disc --&gt; gdisk #GBT分区工具
+Utilities --&gt; disc --&gt; lsblk #列出磁盘设备及分区查看工具
+Utilities --&gt; Filesystem --&gt; resize2fs #调整文件系统大小
+Utilities --&gt; Filesystem --&gt; e2fsprogs #Ext2（及Ext3/4）文件系统工具
+
+# IPv6（未来运营商可能不再提供 IPv4 公网地址，有远程访问需求的建议加入）
+Extra packages ---&gt; ipv6helper （勾选此项即可，下面几项自动勾选）
+Network ---&gt; odhcp6c
+Network ---&gt; odhcpd-ipv6only
+LuCI ---&gt; Protocols ---&gt; luci-proto-ipv6
+LuCI ---&gt; Protocols ---&gt; luci-proto-ppp</code></pre><h3 id="toc_16">3. 为 OpenWrt 单独编译 ipk 插件</h3><p>相关文章，请移步 -&gt; <a href="https://www.moewah.com/archives/4658.html" target="_blank" >《为 OpenWrt 单独编译 ipk 插件》</a></p><h3 id="toc_17">4. OpenWrt 新手配置使用指南</h3><p>相关文章，请移步 -&gt; <a href="https://www.moewah.com/archives/4054.html" target="_blank" >《OpenWrt 新手配置使用指南》</a></p>                                                        <!-- 相关推荐 -->
+                                                                                                        <hr>
+                                    <h2 id="recommend">相关推荐</h2>
+                                    <ol>                                        <li><a href="https://www.moewah.com/archives/4977.html" title="将 OpenWrt 设置为交换机 / AP 模式">将 OpenWrt 设置为交换机 / AP 模式</a></li>
+                                                                            <li><a href="https://www.moewah.com/archives/4796.html" title="Tailscale：基于 WireGuard 异地组建虚拟局域网">Tailscale：基于 WireGuard 异地组建虚拟局域网</a></li>
+                                                                            <li><a href="https://www.moewah.com/archives/4719.html" title="OpenWrt 存储空间扩容的两种方案">OpenWrt 存储空间扩容的两种方案</a></li>
+                                                                            <li><a href="https://www.moewah.com/archives/4106.html" title="OpenWrt 远程访问：DDNS 动态解析和 ZeroTier 虚拟局域网">OpenWrt 远程访问：DDNS 动态解析和 ZeroTier 虚拟局域网</a></li>
+                                                                            <li><a href="https://www.moewah.com/archives/4697.html" title="群晖 VMM 虚拟机安装 OpenWrt 配置旁路由">群晖 VMM 虚拟机安装 OpenWrt 配置旁路由</a></li>
+                                                                            <li><a href="https://www.moewah.com/archives/3643.html" title="Proxmox VE 虚拟机安装 OpenWrt 配置旁路由教程">Proxmox VE 虚拟机安装 OpenWrt 配置旁路由教程</a></li>
+                                    </ol>
+                                                                							<!-- 版权信息 -->
+									<blockquote>
+					文章作者：<a href="https://www.moewah.com/">喵斯基部落</a><br>
+					原文地址：<a href="https://www.moewah.com/archives/4003.html">https://www.moewah.com/archives/4003.html</a><br>
+					版权声明：本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="nofollow">CC BY-NC-SA 4.0</a> 许可协议。非商业转载及引用请注明出处（作者、原文链接），商业转载请联系作者获得授权。
+					</blockquote>
+							                    </div>
+                    
+                    <section class="tags"><a href="https://www.moewah.com/tag/ros/" rel="tag" class="tag-item">软路由</a><a href="https://www.moewah.com/tag/openwrt/" rel="tag" class="tag-item">OpenWrt</a></section>
+                    <div class="social-button" 
+                        data-url="https://www.moewah.com/archives/4003.html"
+                        data-title="OpenWrt 固件自编译教程：从入门到酸爽！ - 喵斯基部落" 
+                        data-excerpt=""
+                        data-img="https://www.moewah.com/usr/uploads/2021/07/2156866513.png" 
+                        data-twitter="#"
+                        data-weibo="#"
+                        data-image="https://www.moewah.com/usr/uploads/2021/07/2156866513.png">
+                                                    <a data-fancybox="gallery-reward" role=button aria-label="赞赏" data-src="#reward" href="javascript:;" class="btn btn-normal btn-highlight">赏杯咖啡</a>
+                            <div hidden id="reward"><img src="https://www.moewah.com/usr/picture/alipay.jpg"></div>
+                                                                            <a role=button 
+                                aria-label="为文章点赞" 
+                                id="social" 
+                                href="javascript:void(0);" onclick="VOID_Vote.vote(this);" 
+                                data-item-id="4003" 
+                                data-type="up"
+                                data-table="content"
+                                class="btn btn-normal post-like vote-button"
+                            >ENJOY <span class="value">7</span>
+                            </a>
+                                                
+                        <a aria-label="分享到微博" href="javascript:void(0);" onclick="Share.toWeibo(this);" class="social-button-icon"><i class="voidicon-weibo"></i></a>
+                        <a aria-label="分享到Twitter" href="javascript:void(0);" onclick="Share.toTwitter(this);" class="social-button-icon"><i class="voidicon-twitter"></i></a>
+                    </div>
+                </article>
+
+                <script>
+                (function () {
+                    $.each($('iframe'), function(i, item){
+                        var src = $(item).attr('src');
+                        if (typeof src === 'string' && src.indexOf('player.bilibili.com') > -1) {
+                            // $(item).addClass('bili-player');
+                            //if (src.indexOf('&high_quality') < 0) {
+                                //src += '&high_quality=1'; // 启用高质量
+                               // $(item).attr('src', src);
+                            //}
+                            $(item).wrap('<div class="bili-player"></div>');
+                        }
+                    });
+                })();
+                </script>
+
+                <!--分页-->
+                                <div class="post-pager">                                            <div class="prev">
+                            <a href="https://www.moewah.com/archives/3943.html" class="pretitle">群晖 DSM 7.0 Docker 部署安装 ZeroTier</a>
+                                                    </div>
+                                                                                    <div class="next">
+                            <a href="https://www.moewah.com/archives/4106.html" class="pretitle">OpenWrt 远程访问：DDNS 动态解析和 ZeroTier 虚拟局域网</a>
+                                                    </div>
+                                    </div>
+                            </section>
+        </div> <!--end .contents-wrap-->
+        <!--目录，可选-->
+                    <div class="toc-mask" onclick="TOC.close();"></div>
+            <div aria-label="文章目录" class="TOC"></div>
+            <style>
+            #toggle-toc { display: block; }
+            </style>
+            </div>
+    <!--评论区，可选-->
+    
+<div class="comments-container float-up">
+    <section id="comments" class="container">
+        <!--评论框-->
+                    <script type="text/javascript">
+(function () {
+    window.TypechoComment = {
+        dom : function (id) {
+            return document.getElementById(id);
+        },
+    
+        create : function (tag, attr) {
+            var el = document.createElement(tag);
+        
+            for (var key in attr) {
+                el.setAttribute(key, attr[key]);
+            }
+        
+            return el;
+        },
+
+        reply : function (cid, coid) {
+            var comment = this.dom(cid), parent = comment.parentNode,
+                response = this.dom('respond-post-4003'), input = this.dom('comment-parent'),
+                form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
+                textarea = response.getElementsByTagName('textarea')[0];
+
+            if (null == input) {
+                input = this.create('input', {
+                    'type' : 'hidden',
+                    'name' : 'parent',
+                    'id'   : 'comment-parent'
+                });
+
+                form.appendChild(input);
+            }
+
+            input.setAttribute('value', coid);
+
+            if (null == this.dom('comment-form-place-holder')) {
+                var holder = this.create('div', {
+                    'id' : 'comment-form-place-holder'
+                });
+
+                response.parentNode.insertBefore(holder, response);
+            }
+
+            comment.appendChild(response);
+            this.dom('cancel-comment-reply-link').style.display = '';
+
+            if (null != textarea && 'text' == textarea.name) {
+                textarea.focus();
+            }
+
+            return false;
+        },
+
+        cancelReply : function () {
+            var response = this.dom('respond-post-4003'),
+            holder = this.dom('comment-form-place-holder'), input = this.dom('comment-parent');
+
+            if (null != input) {
+                input.parentNode.removeChild(input);
+            }
+
+            if (null == holder) {
+                return true;
+            }
+
+            this.dom('cancel-comment-reply-link').style.display = 'none';
+            holder.parentNode.insertBefore(response, holder);
+            return false;
+        }
+    };
+})();
+</script>
+<link rel="stylesheet" href="https://www.moewah.com/usr/plugins/ExSearch/assets/ExSearch-391ac63801.css">
+<!--插件配置-->
+<script>
+ExSearchConfig = {
+    root : "",
+    api : "https://www.moewah.com/usr/plugins/ExSearch/cache/cache-9cd114e2e63c25783f27171ae6bc5569.json"
+}
+</script>
+            <div id="respond-post-4003" class="respond">
+                <div class="cancel-comment-reply" role=button>
+                    <a id="cancel-comment-reply-link" href="https://www.moewah.com/archives/4003.html#respond-post-4003" rel="nofollow" style="display:none" onclick="return TypechoComment.cancelReply();">取消回复</a>                </div>
+                <div id="response" class="widget-title text-left commtitle">添加新评论</div>
+                                    <p class="comment-notification notice">请不要水评论</p>
+                                <form method="post" action="https://www.moewah.com/archives/4003.html/comment" id="comment-form">
+                                            <div class="comment-info-input">
+                        <input aria-label="称呼(必填)" type="text" name="author" id="author" required placeholder="称呼(必填)" value="" />
+                        <input aria-label="电子邮件(必填，将保密)" 
+                            type="email" name="mail" id="mail" 
+                            placeholder="电子邮件(必填，将保密)" 
+                            required                            value="" />
+                        <input aria-label="网站(选填)" type="url" name="url" id="url" 
+                                                        placeholder="网站(选填)"  
+                            value="" />
+                        </div>
+                                        <p style="margin-top:0">
+                        <textarea aria-label="评论输入框" class="input-area" rows="5" name="text" id="textarea" 
+                            placeholder="在这里输入你的评论..." 
+                            style="resize:none;"></textarea>
+                    </p>
+                    <p class="comment-buttons">
+                        <span class="OwO" aria-label="表情按钮" role="button"></span>
+                                                <span class="comment-mail-me">
+                            <input aria-label="有回复时通知我" name="receiveMail" type="checkbox" value="yes" id="receiveMail"/>
+                            <label for="receiveMail">有回复时通知我</label>
+                        </span>
+                                                <button id="comment-submit-button" type="submit" class="submit btn btn-normal">提交评论</button>
+                    </p>
+                </form>
+            </div>
+                
+        <!--历史评论-->
+        <div class="comment-separator commtitle">
+            <div class="comment-tab-current">
+                                    <span class="comment-num">
+                        已有 <span class="num">40</span> 条评论                    </span>
+                            </div>
+        </div>
+                    <div class="comment-list"><div id="comment-1285" class="comment-body comment-parent comment-odd">
+    <div class="comment-content-wrap">
+        <div class="comment-meta">
+            <div class="comment-author">
+                <span class="comment-avatar"><img class="avatar" loading="lazy" src="https://gravatar.loli.net/avatar/d970959559c8e8e8154774f5f4c220e1?s=64&amp;r=G" alt="bigtime" width="64" height="64" /></span>
+                <b><cite class="fn">bigtime</cite></b><span></span>
+            </div>
+            <span>
+                <a href="https://www.moewah.com/archives/4003.html/comment-page-1#comment-1285"><timedatetime="2023-04-06T17:05:06+08:00">2023-04-06 17:05</time></a>
+                                                <a style="margin: 0 5px" no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1285" 
+                    data-type="up"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-up"></i> <span class="value">0</span>
+                </a>
+                <a no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1285" 
+                    data-type="down"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-down"></i> <span class="value">0</span>
+                </a>
+                            </span>
+        </div>
+        <div class="comment-content yue">
+                        <div class="comment-content-inner"><p>首先多谢,写的很详实,很具体.<br>不过我有个疑惑,为什么我按照顺序编译下来,最后编译出来的内核版本是5.4.238,但是看这篇文章的截图内核版本是5.10?<br>这个内核版本是跟着什么走的?怎么调整?谁能指导一下吗?</p></div>
+        </div>
+        <div class="comment-reply">
+            <a no-pjax href="https://www.moewah.com/archives/4003.html/comment-page-1?replyTo=1285#respond-post-4003" rel="nofollow" onclick="return TypechoComment.reply('comment-1285', 1285);">回复</a>        </div>
+    </div>
+        <div class="comment-children">
+        <div class="comment-list"><div id="comment-1289" class="comment-body comment-child comment-level-odd comment-odd">
+    <div class="comment-content-wrap">
+        <div class="comment-meta">
+            <div class="comment-author">
+                <span class="comment-avatar star"><img class="avatar" loading="lazy" src="https://gravatar.loli.net/avatar/a67751f4d5eb1b52de42ee7655cc6c11?s=64&amp;r=G" alt="MoeWah" width="64" height="64" /></span>
+                <b><cite class="fn"><a href="https://www.moewah.com/" rel="external nofollow">MoeWah</a></cite></b><span> <span style="font-size: 0.9rem">回复</span> <b style="font-size:0.9rem;margin-right: 0.3em">@bigtime</b> </span>
+            </div>
+            <span>
+                <a href="https://www.moewah.com/archives/4003.html/comment-page-1#comment-1289"><timedatetime="2023-04-10T10:10:06+08:00">2023-04-10 10:10</time></a>
+                                                <a style="margin: 0 5px" no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1289" 
+                    data-type="up"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-up"></i> <span class="value">0</span>
+                </a>
+                <a no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1289" 
+                    data-type="down"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-down"></i> <span class="value">0</span>
+                </a>
+                            </span>
+        </div>
+        <div class="comment-content yue">
+                        <div class="comment-content-inner"><p>一些老设备性能不足，不是所有设备都支持最新内核的。如果你确认设备支持的话可以参考 https://github.com/coolsnowwolf/lede/issues/1415</p></div>
+        </div>
+        <div class="comment-reply">
+            <a no-pjax href="https://www.moewah.com/archives/4003.html/comment-page-1?replyTo=1289#respond-post-4003" rel="nofollow" onclick="return TypechoComment.reply('comment-1289', 1289);">回复</a>        </div>
+    </div>
+    </div>
+<div id="comment-1290" class="comment-body comment-child comment-level-odd comment-even">
+    <div class="comment-content-wrap">
+        <div class="comment-meta">
+            <div class="comment-author">
+                <span class="comment-avatar"><img class="avatar" loading="lazy" src="https://gravatar.loli.net/avatar/d970959559c8e8e8154774f5f4c220e1?s=64&amp;r=G" alt="bigtime" width="64" height="64" /></span>
+                <b><cite class="fn">bigtime</cite></b><span> <span style="font-size: 0.9rem">回复</span> <b style="font-size:0.9rem;margin-right: 0.3em">@MoeWah</b> </span>
+            </div>
+            <span>
+                <a href="https://www.moewah.com/archives/4003.html/comment-page-1#comment-1290"><timedatetime="2023-04-10T21:56:58+08:00">2023-04-10 21:56</time></a>
+                                                <a style="margin: 0 5px" no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1290" 
+                    data-type="up"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-up"></i> <span class="value">1</span>
+                </a>
+                <a no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1290" 
+                    data-type="down"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-down"></i> <span class="value">0</span>
+                </a>
+                            </span>
+        </div>
+        <div class="comment-content yue">
+                        <div class="comment-content-inner"><p>有道理，发现用x86的选项就是很新的内核。<br>多谢多谢。</p></div>
+        </div>
+        <div class="comment-reply">
+            <a no-pjax href="https://www.moewah.com/archives/4003.html/comment-page-1?replyTo=1290#respond-post-4003" rel="nofollow" onclick="return TypechoComment.reply('comment-1290', 1290);">回复</a>        </div>
+    </div>
+    </div>
+</div>    </div>
+    </div>
+<div id="comment-1284" class="comment-body comment-parent comment-even">
+    <div class="comment-content-wrap">
+        <div class="comment-meta">
+            <div class="comment-author">
+                <span class="comment-avatar"><img class="avatar" loading="lazy" src="https://gravatar.loli.net/avatar/d970959559c8e8e8154774f5f4c220e1?s=64&amp;r=G" alt="bigtime" width="64" height="64" /></span>
+                <b><cite class="fn">bigtime</cite></b><span></span>
+            </div>
+            <span>
+                <a href="https://www.moewah.com/archives/4003.html/comment-page-1#comment-1284"><timedatetime="2023-04-05T22:01:39+08:00">2023-04-05 22:01</time></a>
+                                                <a style="margin: 0 5px" no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1284" 
+                    data-type="up"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-up"></i> <span class="value">0</span>
+                </a>
+                <a no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1284" 
+                    data-type="down"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-down"></i> <span class="value">0</span>
+                </a>
+                            </span>
+        </div>
+        <div class="comment-content yue">
+                        <div class="comment-content-inner"><p>请教个问题，为什么我跟你一样的做法去编译的，最后编译出来的openwrt的内核版本是5.4.238，而不是5.10.46？如果我想把内核版本也调整一下，我该怎么弄？</p></div>
+        </div>
+        <div class="comment-reply">
+            <a no-pjax href="https://www.moewah.com/archives/4003.html/comment-page-1?replyTo=1284#respond-post-4003" rel="nofollow" onclick="return TypechoComment.reply('comment-1284', 1284);">回复</a>        </div>
+    </div>
+    </div>
+<div id="comment-1275" class="comment-body comment-parent comment-odd">
+    <div class="comment-content-wrap">
+        <div class="comment-meta">
+            <div class="comment-author">
+                <span class="comment-avatar"><img class="avatar" loading="lazy" src="https://gravatar.loli.net/avatar/b186cd7edc9fbfc48a89f19f69a11922?s=64&amp;r=G" alt="tt" width="64" height="64" /></span>
+                <b><cite class="fn">tt</cite></b><span></span>
+            </div>
+            <span>
+                <a href="https://www.moewah.com/archives/4003.html/comment-page-1#comment-1275"><timedatetime="2023-03-12T22:25:14+08:00">2023-03-12 22:25</time></a>
+                                                <a style="margin: 0 5px" no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1275" 
+                    data-type="up"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-up"></i> <span class="value">0</span>
+                </a>
+                <a no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1275" 
+                    data-type="down"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-down"></i> <span class="value">0</span>
+                </a>
+                            </span>
+        </div>
+        <div class="comment-content yue">
+                        <div class="comment-content-inner"><p>编译好的固件安装后会自动换成腾讯的源，有些自定义添加源没法更新，请问如何设置默认使用github的源呢？在config里面似乎没找到</p></div>
+        </div>
+        <div class="comment-reply">
+            <a no-pjax href="https://www.moewah.com/archives/4003.html/comment-page-1?replyTo=1275#respond-post-4003" rel="nofollow" onclick="return TypechoComment.reply('comment-1275', 1275);">回复</a>        </div>
+    </div>
+    </div>
+<div id="comment-1238" class="comment-body comment-parent comment-even">
+    <div class="comment-content-wrap">
+        <div class="comment-meta">
+            <div class="comment-author">
+                <span class="comment-avatar"><img class="avatar" loading="lazy" src="https://gravatar.loli.net/avatar/0f056efa5fc17430cf4a45c19222dc0f?s=64&amp;r=G" alt="hijk1" width="64" height="64" /></span>
+                <b><cite class="fn">hijk1</cite></b><span></span>
+            </div>
+            <span>
+                <a href="https://www.moewah.com/archives/4003.html/comment-page-1#comment-1238"><timedatetime="2022-12-21T15:21:19+08:00">2022-12-21 15:21</time></a>
+                                                <a style="margin: 0 5px" no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1238" 
+                    data-type="up"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-up"></i> <span class="value">1</span>
+                </a>
+                <a no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1238" 
+                    data-type="down"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-down"></i> <span class="value">0</span>
+                </a>
+                            </span>
+        </div>
+        <div class="comment-content yue">
+                        <div class="comment-content-inner"><p>好多年了这个是最详细最成功的了<br>按照这个一次性成功<br>谢谢博主</p></div>
+        </div>
+        <div class="comment-reply">
+            <a no-pjax href="https://www.moewah.com/archives/4003.html/comment-page-1?replyTo=1238#respond-post-4003" rel="nofollow" onclick="return TypechoComment.reply('comment-1238', 1238);">回复</a>        </div>
+    </div>
+    </div>
+<div id="comment-1105" class="comment-body comment-parent comment-odd">
+    <div class="comment-content-wrap">
+        <div class="comment-meta">
+            <div class="comment-author">
+                <span class="comment-avatar"><img class="avatar" loading="lazy" src="https://gravatar.loli.net/avatar/b111feba5b9b4862eeb77c200b2328fc?s=64&amp;r=G" alt="edged" width="64" height="64" /></span>
+                <b><cite class="fn">edged</cite></b><span></span>
+            </div>
+            <span>
+                <a href="https://www.moewah.com/archives/4003.html/comment-page-1#comment-1105"><timedatetime="2022-08-08T23:44:23+08:00">2022-08-08 23:44</time></a>
+                                                <a style="margin: 0 5px" no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1105" 
+                    data-type="up"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-up"></i> <span class="value">0</span>
+                </a>
+                <a no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1105" 
+                    data-type="down"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-down"></i> <span class="value">1</span>
+                </a>
+                            </span>
+        </div>
+        <div class="comment-content yue">
+                        <div class="comment-content-inner"><p>再请教一下，如果要装能直接启动的openwrt，是不是直接仅制作.config文件，无需本地编译固件执行完就行了，后面的都不用编译了？</p></div>
+        </div>
+        <div class="comment-reply">
+            <a no-pjax href="https://www.moewah.com/archives/4003.html/comment-page-1?replyTo=1105#respond-post-4003" rel="nofollow" onclick="return TypechoComment.reply('comment-1105', 1105);">回复</a>        </div>
+    </div>
+        <div class="comment-children">
+        <div class="comment-list"><div id="comment-1108" class="comment-body comment-child comment-level-odd comment-odd">
+    <div class="comment-content-wrap">
+        <div class="comment-meta">
+            <div class="comment-author">
+                <span class="comment-avatar star"><img class="avatar" loading="lazy" src="https://gravatar.loli.net/avatar/a67751f4d5eb1b52de42ee7655cc6c11?s=64&amp;r=G" alt="MoeWah" width="64" height="64" /></span>
+                <b><cite class="fn"><a href="https://www.moewah.com/" rel="external nofollow">MoeWah</a></cite></b><span> <span style="font-size: 0.9rem">回复</span> <b style="font-size:0.9rem;margin-right: 0.3em">@edged</b> </span>
+            </div>
+            <span>
+                <a href="https://www.moewah.com/archives/4003.html/comment-page-1#comment-1108"><timedatetime="2022-08-12T11:28:23+08:00">2022-08-12 11:28</time></a>
+                                                <a style="margin: 0 5px" no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1108" 
+                    data-type="up"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-up"></i> <span class="value">0</span>
+                </a>
+                <a no-pjax target="_self" class="comment-vote vote-button" 
+                    href="javascript:void(0)" 
+                    onclick="VOID_Vote.vote(this)"
+                    data-item-id="1108" 
+                    data-type="down"
+                    data-table="comment"
+                ><i class="voidicon-thumbs-down"></i> <span class="value">0</span>
+                </a>
+                            </span>
+        </div>
+        <div class="comment-content yue">
+                        <div class="comment-content-inner"><p>固件最终需要编译生成的，只是在本地编译和云编译的区别。在本地制作.config 文件，通过 github 云编译可以加快编译的效率，可避免因复杂的本地网络环境而影响编译的成功率。云编译可以在github找找相关的模板来配合使用。</p></div>
+        </div>
+        <div class="comment-reply">
+            <a no-pjax href="https://www.moewah.com/archives/4003.html/comment-page-1?replyTo=1108#respond-post-4003" rel="nofollow" onclick="return TypechoComment.reply('comment-1108', 1108);">回复</a>        </div>
+    </div>
+    </div>
+</div>    </div>
+    </div>
+</div>            <ol class="pager"><li class="current"><a href="https://www.moewah.com/archives/4003.html/comment-page-1#comments">1</a></li><li><a href="https://www.moewah.com/archives/4003.html/comment-page-2#comments">2</a></li><li><span>...</span></li><li><a href="https://www.moewah.com/archives/4003.html/comment-page-4#comments">4</a></li><li class="next"><a href="https://www.moewah.com/archives/4003.html/comment-page-2#comments"><span aria-label="评论下一页">→</span></a></li></ol>            </section>
+</div>
+</main>
+        <footer>
+            <div class="container wide">
+                <section>
+                    <p>© 2024  <span class="brand">喵斯基部落</span></p>
+                    <p>感谢陪伴：<span id="uptime"></span></p>
+                </section>
+                <section>
+                    <p>Powered by <a href="http://typecho.org/" rel="nofollow">Typecho</a> • <a href="https://blog.imalan.cn/archives/247/" rel="nofollow">Theme VOID</a></p>
+                    <p>万物皆可萌 !!!  ヾ(≧∇≦*)ゝ 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2714096971819819" crossorigin="anonymous"></script></p>
+                </section>
+            </div>
+        </footer>
+
+        <!--侧边控制按钮-->
+        <aside id="ctrler-panel">
+            <div class="ctrler-item" id="go-top">
+                <a target="_self" aria-label="返回顶部" href="javascript:void(0);" style="transform: translateX(-2px);" onclick="VOID_SmoothScroller.scrollTo(0);"><i class="voidicon-up"></i></a>
+            </div>
+
+            
+            <div aria-label="展开或关闭设置面板" id="toggle-setting-pc" class="ctrler-item hidden-xs">
+                <a target="_self" href="javascript:void(0);" style="transform: translateX(-2px);" onclick="VOID_Ui.toggleSettingPanel();"><i class="voidicon-cog"></i></a>
+            </div>
+            <div aria-label="展开或关闭文章目录" class="ctrler-item" id="toggle-toc">
+                <a target="_self" href="javascript:void(0);" style="margin-left: -2px" onclick="TOC.toggle()"><i class="voidicon-left"></i></a>
+            </div>
+        </aside>
+
+        <!--站点设置面板-->
+        <aside hidden id="setting-panel">
+            <section>
+                <div id="toggle-night">
+                    <a target="_self" href="javascript:void(0)" onclick="VOID_Ui.DarkModeSwitcher.toggleByHand();"><i></i></a>
+                </div>
+                <div id="adjust-text-container">
+                    <div class="adjust-text-item">
+                        <a target="_self" href="javascript:void(0)" onclick="VOID_Ui.adjustTextsize(false);"><i class="voidicon-font"></i>-</a>
+                        <span id="current_textsize"></span>
+                        <a target="_self" href="javascript:void(0)" onclick="VOID_Ui.adjustTextsize(true);"><i class="voidicon-font"></i>+</a>
+                    </div>
+                    <div class="adjust-text-item">
+                        <a target="_self" class="font-indicator  checked" href="javascript:void(0)" onclick="VOID_Ui.toggleSerif(this, false);">Sans</a>
+                        <a target="_self" class="font-indicator " href="javascript:void(0)" onclick="VOID_Ui.toggleSerif(this, true);">Serif</a>
+                    </div>
+                </div>
+            </section>
+            <section id="links">
+                                    <a target="_self" class="link" href="javascript:void(0)" onclick="VOID_Ui.toggleLoginForm()"><i class="voidicon-user"></i></a>       
+                                <a class="link" title="RSS" target="_blank" href="https://www.moewah.com/feed/"><i class="voidicon-rss"></i></a>
+                            </section>
+            <section id="login-panel" >
+                                    <form action="https://www.moewah.com/index.php/action/login?_=41ad2f28fd67a6d31f31816ab4d3c40f" id="loggin-form" method="post" name="login" role="form">
+                        <div id="loggin-inputs">
+                            <input type="text" name="name" autocomplete="username" placeholder="请输入用户名" required/>
+                            <input type="password" name="password" autocomplete="current-password" placeholder="请输入密码" required/>
+                            <input type="hidden" name="referer" value="https://www.moewah.com/archives/4003.html">
+                        </div>
+                        <div class="buttons" id="loggin-buttons">
+                            <button class="btn btn-normal" type="button" onclick="$('#login-panel').removeClass('show');$('#setting-panel').removeClass('show')">关闭</button>
+                            <button class="btn btn-normal" type="submit" onclick="VOID_Ui.rememberPos()">登录</button>
+                            <span hidden id="wait" class="btn btn-normal">请稍等……</span>
+                        </div>
+                    </form>
+                 
+            </section> 
+        </aside>
+
+                <script>
+            var serviceWorkerUri = '/VOIDCacheRuleDefault.js';
+            if ('serviceWorker' in navigator) {  
+                navigator.serviceWorker.register(serviceWorkerUri).then(function() {
+                    if (navigator.serviceWorker.controller) {
+                        console.log('Service woker is registered and is controlling.');
+                    } else {
+                        console.log('Please reload this page to allow the service worker to handle network operations.');
+                    }
+                }).catch(function(error) {
+                    console.log('ERROR: ' + error);
+                });
+            } else {
+                console.log('Service workers are not supported in the current browser.');
+            }
+            // SW刷新判断，避免无限刷新
+            let refreshing = false
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+              if (refreshing) {
+                return
+              }
+              refreshing = true;
+              window.location.reload();
+            });   
+        </script>
+                <script data-manual src="https://www.moewah.com/usr/themes/VOID/assets/bundle-b514182550.js"></script>
+                <script src="https://www.moewah.com/usr/themes/VOID/assets/VOID-e344978213.js"></script>
+        <script>
+        if($(".OwO").length > 0){
+            new OwO({
+                logo: 'OωO',
+                container: document.getElementsByClassName('OwO')[0],
+                target: document.getElementsByClassName('input-area')[0],
+                api: 'https://www.moewah.com/usr/themes/VOID/assets/libs/owo/OwO_03.json',
+                position: 'down',
+                width: '400px',
+                maxHeight: '250px'
+            });
+        }
+        </script>
+                <script src="https://www.moewah.com/usr/plugins/ExSearch/assets/ExSearch-6e577ac4e0.js"></script>
+				<script>
+			((function() {
+				var callbacks = [],
+					timeLimit = 50,
+					open = false;
+				setInterval(loop, 1);
+				return {
+					addListener: function(fn) {
+						callbacks.push(fn);
+					},
+					cancleListenr: function(fn) {
+						callbacks = callbacks.filter(function(v) {
+							return v !== fn;
+						});
+					}
+				}
+				function loop() {
+					var startTime = new Date();
+					debugger;
+					if (new Date() - startTime > timeLimit) {
+						if (!open) {
+							callbacks.forEach(function(fn) {
+								fn.call(null);
+							});
+						}
+						open = true;
+						window.stop();
+						alert('不要扒我了');
+						window.location.reload();
+					} else {
+						open = false;
+					}
+				}
+			})()).addListener(function() {
+				window.location.reload();
+			});
+		</script>
+	    </body>
+</html>
