@@ -6,10 +6,10 @@ on:
     inputs:
       FEEDS_CONF:
         description: 'Feeds [必选]'
-        default: 'feeds.conf.default'
+        default: 'feeds.conf.default.ufi'
       CONFIG_FILE:
         description: '调用的 [.config] 文件名称'
-        default: 'cr660x'
+        default: 'ufi'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
         default: 'coolsnowwolf/lede:master'
@@ -26,8 +26,8 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-    #runs-on: ubuntu-latest
+    #runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     #if: github.event.repository.owner.id == github.event.sender.id
     permissions: write-all
 
