@@ -6,13 +6,13 @@ on:
     inputs:
       FEEDS_CONF:
         description: 'Feeds [必选]'
-        default: 'feeds.conf.default.ufi'
+        default: 'feeds.conf.default'
       CONFIG_FILE:
         description: '调用的 [.config] 文件名称'
-        default: 'ufi'
+        default: 'r6250'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
-        default: 'bigDshe/immortalwrt-ufi:master'
+        default: 'coolsnowwolf/lede:master'
   #schedule:
   #- cron: 15 */8 * * *
 
