@@ -131,8 +131,8 @@ jobs:
         #make tools/compile -j$(nproc) 
         #make toolchain/compile -j$(nproc) 
         #make -j$(nproc) 
-        make target/compile -j$(nproc) V=s
-        make package/compile -j$(nproc) V=s
+        make target/compile -j$(nproc) 
+        make package/compile -j$(nproc) 
         make package/index
         make package/install -j$(nproc) V=s
         make target/install -j$(nproc)
