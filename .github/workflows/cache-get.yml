@@ -22,14 +22,11 @@ env:
   UPLOAD_BIN_DIR: true
   UPLOAD_RELEASE: false
   TZ: Asia/Shanghai
-  #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build:
-    #runs-on: ubuntu-20.04
-    runs-on: ubuntu-latest
-    #if: github.event.repository.owner.id == github.event.sender.id
-    permissions: write-all
+    runs-on: ubuntu-22.04
+    #runs-on: ubuntu-latest
 
 
     steps:
@@ -84,18 +81,17 @@ jobs:
       working-directory: /workdir
       run: |
         df -hT $PWD
-        git clone -b $REPO_BRANCH $REPO_URL openwrt
+        #git clone -b $REPO_BRANCH $REPO_URL openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
         cd ./openwrt
-        git pull
+        #git pull
         rm -rf /workdir/openwrt/feeds.conf.default
 
     - name: 更新 feeds
       run: |
-        cp $FEEDS_CONF ./openwrt/feeds.conf.default
+        cp -f $FEEDS_CONF openwrt/feeds.conf.default
         ./openwrt/scripts/feeds update -a
-        #./openwrt/scripts/feeds update -a -f
         chmod +x $DIY_P1_SH
         #$GITHUB_WORKSPACE/$DIY_P1_SH
 
@@ -105,13 +101,12 @@ jobs:
         cd openwrt 
         df -h && ls
         ./scripts/feeds install -a
-        #./scripts/feeds install -a -f
         free -h
 
 
     - name: 加载自定义 configuration
       run: |
-        cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE ./openwrt/.config
+        cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
         #$GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
@@ -122,7 +117,9 @@ jobs:
       run: |
         cd openwrt
         make defconfig
-        make download -j$(nproc)
+        make download -j4
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
 
 
     - name: 编译固件
@@ -132,11 +129,11 @@ jobs:
         #make tools/compile -j$(nproc) 
         #make toolchain/compile -j$(nproc) 
         #make -j$(nproc) 
-        make target/compile -j$(nproc)
-        make package/compile -j$(nproc)
+        make target/compile -j4
+        make package/compile -j4
         make package/index
-        make package/install -j$(nproc)
-        make target/install -j$(nproc)
+        make package/install -j4
+        make target/install -j4
         make json_overview_image_info
         make checksum
         echo "status=success" >> $GITHUB_OUTPUT
@@ -186,3 +183,17 @@ jobs:
           * 当前使用版本:【源码( ${{ env.REPO_URL }}:${{ env.REPO_BRANCH }} )】
           * ${{ env.VERSION_INFO }}
           
+    - name: Delete workflow runs
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        retain_days: 0
+        keep_minimum_runs: 2
+
+    - name: Remove old Releases
+      uses: dev-drprasad/delete-older-releases@master
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      with:
+        keep_latest: 3
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
