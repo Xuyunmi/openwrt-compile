@@ -143,7 +143,7 @@ jobs:
         #编译设备名，编译完成时间
 
     - name: 检查磁盘空间
-      if: steps.compile.outputs.status == 'success' && !cancelled()
+      #if: steps.compile.outputs.status == 'success' && !cancelled()
       run: |
        df -hT
        cp $GITHUB_WORKSPACE/Openwrt.info ./openwrt/bin/Openwrt.info
