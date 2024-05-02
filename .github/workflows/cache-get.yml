@@ -9,7 +9,7 @@ on:
         default: 'feeds.conf.default.ufi'
       CONFIG_FILE:
         description: '调用的 [.config] 文件名称'
-        default: 'ufi'
+        default: '003.config'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
         default: 'lkiuyu/openwrt-ufi:main'
@@ -85,7 +85,7 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
         cd ./openwrt
-        #git pull
+        git pull
         rm -rf /workdir/openwrt/feeds.conf.default
 
     - name: 更新 feeds
@@ -129,11 +129,11 @@ jobs:
         #make tools/compile -j$(nproc) 
         #make toolchain/compile -j$(nproc) 
         #make -j$(nproc) 
-        make target/compile -j4
-        make package/compile -j4
+        make target/compile -j4 V=s
+        make package/compile -j4 V=s
         make package/index
-        make package/install -j4
-        make target/install -j4
+        make package/install -j4 V=s
+        make target/install -j4 V=s
         make json_overview_image_info
         make checksum
         echo "status=success" >> $GITHUB_OUTPUT
