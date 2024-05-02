@@ -121,7 +121,7 @@ jobs:
       run: |
         cd openwrt
         make defconfig
-        make download -j$(nproc)
+        #make download -j$(nproc)
 
 
     - name: 编译固件
@@ -131,7 +131,7 @@ jobs:
         #make tools/compile -j$(nproc) 
         #make toolchain/compile -j$(nproc) 
         #make -j$(nproc) 
-        make target/compile -j$(nproc) -y
+        make target/compile -j$(nproc)
         make package/compile -j$(nproc) 
         make package/index
         make package/install -j$(nproc)
