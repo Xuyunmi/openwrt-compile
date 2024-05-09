@@ -104,7 +104,7 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
         cd ./openwrt
-        git pull
+        #git pull
         rm -rf /workdir/openwrt/feeds.conf.default
 
     - name: 更新 feeds
