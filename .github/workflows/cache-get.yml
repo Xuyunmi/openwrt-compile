@@ -127,7 +127,7 @@ jobs:
       run: |
         cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
-        #$GITHUB_WORKSPACE/$DIY_P2_SH
+        $GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
         df -hT && ls && free -m && ls openwrt
 
@@ -148,7 +148,7 @@ jobs:
         #make tools/compile -j$(nproc) 
         #make toolchain/compile -j$(nproc) 
         #make -j$(nproc) 
-        make target/compile -j4 V=s
+        make target/compile -j4
         make package/compile -j4
         make package/index
         make package/install -j4
