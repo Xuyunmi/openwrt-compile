@@ -12,7 +12,7 @@ on:
         default: 'mf601'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
-        default: 'lkiuyu/openwrt-ufi:main'
+        default: 'lkiuyu/immortalwrt:master'
   #schedule:
   #- cron: 15 */8 * * *
 
