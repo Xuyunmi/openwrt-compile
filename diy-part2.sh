@@ -11,7 +11,7 @@ sed -i 's/192.168.1.1/192.168.5.1/g' openwrt/package/base-files/files/bin/config
 sed -i 's/OpenWrt/BigD/g' openwrt/package/base-files/files/bin/config_generate
 
 #设置WIFI
-sed -i 's/OpenWrt/Godlike/g' openwrt/package/kernel/mac80211/files/lib/wifi/mac80211.sh
+sed -i 's/OpenWrt/GodLike/g' openwrt/package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/wireless.radio${devidx}.disabled=1/wireless.radio${devidx}.disabled=0/g' openwrt/package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/wireless.radio${devidx}.country=US/wireless.radio${devidx}.country=CN/g' openwrt/package/kernel/mac80211/files/lib/wifi/mac80211.sh
 sed -i 's/wireless.default_radio${devidx}.encryption=none/wireless.default_radio${devidx}.encryption=psk-mixed/g' openwrt/package/kernel/mac80211/files/lib/wifi/mac80211.sh
