@@ -126,7 +126,6 @@ jobs:
     - name: 加载自定义 configuration
       run: |
         cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE openwrt/.config
-        git clone https://github.com/jerrykuku/luci-app-vssr.git openwrt/package/luci-app-vssr
         chmod +x $DIY_P2_SH
         $GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
