@@ -33,5 +33,3 @@ rm -rf openwrt/feeds/kenzo/luci-theme-argone/README.md
 #更换主题neobird快捷应用栏
 #sed -i 's/shadowsocksr/vssr/g' openwrt/feeds/kenzo/luci-theme-neobird/luasrc/view/themes/neobird/header.htm
 
-#VSSR
-#git clone https://github.com/jerrykuku/luci-app-vssr.git package/luci-app-vssr
