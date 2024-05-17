@@ -7,7 +7,6 @@
 
 ## openwrt diy
 - find ./feeds/ -name "*theme-argon*" | xargs rm -rf
-- git clone -b 18.06 https://github.com/BigDshe/luci-theme-argon.git ./feeds/luci/themes/luci-theme-argon 
 
 - df -hT && ls -alh && free -h && cat /proc/cpuinfo
 - make defconfig
