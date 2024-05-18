@@ -126,6 +126,7 @@ jobs:
     - name: 加载自定义 configuration
       run: |
         cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE openwrt/.config
+        cp -f $GITHUB_WORKSPACE/extra/Makefile openwrt/package/feeds/small/shadowsocksr-libev/
         chmod +x $DIY_P2_SH
         $GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
