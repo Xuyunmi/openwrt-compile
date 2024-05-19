@@ -146,7 +146,7 @@ jobs:
       id: compile
       run: |
         cd openwrt && ls
-        cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/small/shadowsocksr-libev/
+        #cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/small/shadowsocksr-libev/
         #make tools/compile -j$(nproc) 
         #make toolchain/compile -j$(nproc) 
         #make -j$(nproc) 
