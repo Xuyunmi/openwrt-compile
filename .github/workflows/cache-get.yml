@@ -93,7 +93,7 @@ jobs:
       with:
         path: /workdir/openwrt
         key: ${{env.DEFAULT_SOURCE}}-${{env.CONFIG_FILE}}
-        restore-keys: ${{env.DEFAULT_SOURCE}}
+        restore-keys: ${{env.CONFIG_FILE}}
         
         
     - name: 克隆源码
@@ -127,7 +127,7 @@ jobs:
       run: |
         cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
-        #$GITHUB_WORKSPACE/$DIY_P2_SH
+        $GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
         df -hT && ls && free -m && ls openwrt
 
