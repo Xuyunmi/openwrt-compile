@@ -12,9 +12,9 @@ on:
         default: 'mf601'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
-        default: 'lkiuyu/immortalwrt:master'
-  schedule:
-  - cron: 15 10 */1  * *
+        default: 'lkiuyu/openwrt-ufi:main'
+  #schedule:
+  #- cron: 15 10 */1  * *
 
 env:
   DIY_P1_SH: diy-part1.sh
@@ -104,10 +104,10 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
         cd ./openwrt
-        #git pull
-        rm -rf /workdir/openwrt/feeds.conf.default
+        git pull
+        #rm -rf /workdir/openwrt/feeds.conf.default
         #git checkout 140b48a9e93909873bee777ca5bdf49fe4f01271
-        git checkout 8113169cadce2e298a6a6b973132bd40a996f2f4
+        #git checkout 8113169cadce2e298a6a6b973132bd40a996f2f4
         rm -rf /workdir/openwrt/feeds.conf.default
 
     - name: 更新 feeds
