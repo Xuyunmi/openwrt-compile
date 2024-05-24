@@ -6,15 +6,15 @@ on:
     inputs:
       FEEDS_CONF:
         description: 'Feeds [必选]'
-        default: 'feeds.conf.default'
+        default: 'feeds.conf.default.ufi'
       CONFIG_FILE:
         description: '调用的 [.config] 文件名称'
-        default: 'r3g'
+        default: 'mf601'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
-        default: 'coolsnowwolf/lede:master'
-  #schedule:
-  #- cron: 15 */8 * * *
+        default: 'lkiuyu/immortalwrt:master'
+  schedule:
+  - cron: 15 10 */1  * *
 
 env:
   DIY_P1_SH: diy-part1.sh
