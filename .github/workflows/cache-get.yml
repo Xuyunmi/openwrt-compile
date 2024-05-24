@@ -121,7 +121,7 @@ jobs:
         df -h && ls
         ./scripts/feeds install -a
         free -h
-        cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/small/shadowsocksr-libev/Makefile
+        #cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/small/shadowsocksr-libev/Makefile
 
 
     - name: 加载自定义 configuration
