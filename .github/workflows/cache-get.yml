@@ -105,6 +105,7 @@ jobs:
         ls -alh
         cd ./openwrt
         #git pull
+        rm -rf /workdir/openwrt/feeds.conf.default
         git checkout 140b48a9e93909873bee777ca5bdf49fe4f01271
         rm -rf /workdir/openwrt/feeds.conf.default
 
