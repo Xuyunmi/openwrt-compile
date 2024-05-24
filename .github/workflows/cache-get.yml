@@ -106,8 +106,8 @@ jobs:
         cd ./openwrt
         #git pull
         rm -rf /workdir/openwrt/feeds.conf.default
-        git checkout 140b48a9e93909873bee777ca5bdf49fe4f01271
-        #git checkout 8113169cadce2e298a6a6b973132bd40a996f2f4
+        #git checkout 140b48a9e93909873bee777ca5bdf49fe4f01271
+        git checkout 8113169cadce2e298a6a6b973132bd40a996f2f4
         rm -rf /workdir/openwrt/feeds.conf.default
 
     - name: 更新 feeds
