@@ -122,6 +122,7 @@ jobs:
         ./scripts/feeds install -a
         free -h
         cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/telephony/freeswitch/Makefile
+        cp -f $GITHUB_WORKSPACE/extra/mac80211.sh package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
 
 
     - name: 加载自定义 configuration
