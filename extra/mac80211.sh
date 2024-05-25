@@ -1,5 +1,5 @@
 #!/bin/sh
-/data/data/com.termux/files/home/.local/share/tmoe-linux/containers/chroot/debian-bookworm_arm64/home/yunmi/mido/ufi/package/network/config/wifi-scripts/files/lib/wifi/
+#/package/network/config/wifi-scripts/files/lib/wifi/
 
 append DRIVERS "mac80211"
 
