@@ -56,8 +56,7 @@ jobs:
         sudo docker image prune --all --force
         sudo -E apt-get -qq update
         sudo apt install -y build-essential wget tar zstd
-		
-		
+	
     - name: 缓存编译
       id: cachebuild
       uses: actions/cache@v4
