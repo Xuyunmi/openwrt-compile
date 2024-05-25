@@ -69,7 +69,8 @@ jobs:
 
     - name: 压缩
       run: |
-        tar -zcvf openwrt.tar.gz /workdir/openwrt/
+        cd /workdir && ls -lh
+        tar -zcvf openwrt.tar.gz openwrt
         ls -lh
 
     - name: 上传 bin
