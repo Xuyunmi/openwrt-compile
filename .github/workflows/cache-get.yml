@@ -138,6 +138,7 @@ jobs:
         make download -j4
         #find dl -size -1024c -exec ls -l {} \;
         #find dl -size -1024c -exec rm -f {} \;
+        cp -f $GITHUB_WORKSPACE/extra/mac80211.sh /package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
 
 
     - name: 编译固件
