@@ -6,13 +6,13 @@ on:
     inputs:
       FEEDS_CONF:
         description: 'Feeds [必选]'
-        default: 'feeds.conf.default'
+        default: 'feeds.conf.default.ufi'
       CONFIG_FILE:
         description: '调用的 [.config] 文件名称'
-        default: 'r3g'
+        default: 'mf601'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
-        default: 'coolsnowwolf/lede:master'
+        default: 'lkiuyu/openwrt-ufi:main'
   #schedule:
   #- cron: 15 10 */1  * *
 
@@ -93,7 +93,7 @@ jobs:
       with:
         path: /workdir/openwrt
         key: ${{env.DEFAULT_SOURCE}}-${{env.CONFIG_FILE}}
-        restore-keys: ${{env.CONFIG_FILE}}
+        restore-keys: ${{env.DEFAULT_SOURCE}}
         
         
     - name: 克隆源码
@@ -112,7 +112,7 @@ jobs:
         cp -f $FEEDS_CONF openwrt/feeds.conf.default
         ./openwrt/scripts/feeds update -a
         chmod +x $DIY_P1_SH
-        $GITHUB_WORKSPACE/$DIY_P1_SH
+        #$GITHUB_WORKSPACE/$DIY_P1_SH
 
  
     - name: 安装 feeds
@@ -126,7 +126,7 @@ jobs:
       run: |
         cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
-        $GITHUB_WORKSPACE/$DIY_P2_SH
+        #$GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
         df -hT && ls && free -m && ls openwrt
 
