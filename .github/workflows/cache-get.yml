@@ -134,12 +134,12 @@ jobs:
       id: package
       run: |
         cd openwrt
+        cp -f $GITHUB_WORKSPACE/extra/mac80211.sh package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
+        cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/telephony/freeswitch/Makefile
         make defconfig
         make download -j4
         #find dl -size -1024c -exec ls -l {} \;
         #find dl -size -1024c -exec rm -f {} \;
-        cp -f $GITHUB_WORKSPACE/extra/mac80211.sh package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
-        cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/telephony/freeswitch/Makefile
 
 
     - name: 编译固件
@@ -152,7 +152,7 @@ jobs:
         make target/compile -j4
         make package/compile -j4
         make package/index
-        make package/install -j4
+        make package/install -j4 V=s
         make target/install -j4
         make json_overview_image_info
         make checksum
