@@ -183,3 +183,7 @@ CONFIG_SQLITE3_FTS5=y
 CONFIG_SQLITE3_JSON1=y
 CONFIG_SQLITE3_RTREE=y
 CONFIG_ZSTD_OPTIMIZE_O3=y
+# CONFIG_PACKAGE_kmod-ipt-offload is not set
+# CONFIG_PACKAGE_kmod-tcp-bbr is not set
+# CONFIG_PACKAGE_luci-app-turboacc is not set
+# CONFIG_PACKAGE_pdnsd-alt is not set
