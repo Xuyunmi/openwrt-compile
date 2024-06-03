@@ -93,7 +93,7 @@ jobs:
       with:
         path: /workdir/openwrt
         key: ${{env.DEFAULT_SOURCE}}-${{env.CONFIG_FILE}}
-        restore-keys: ${{env.DEFAULT_SOURCE}}
+        restore-keys: ${{env.CONFIG_FILE}}
         
         
     - name: 克隆源码
