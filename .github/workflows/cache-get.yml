@@ -111,6 +111,7 @@ jobs:
       run: |
         cp -f $FEEDS_CONF openwrt/feeds.conf.default
         ./openwrt/scripts/feeds update -a
+        ./openwrt/scripts/feeds update -a -f
         chmod +x $DIY_P1_SH
         #$GITHUB_WORKSPACE/$DIY_P1_SH
 
@@ -120,13 +121,14 @@ jobs:
         cd openwrt 
         df -h && ls
         ./scripts/feeds install -a
+        ./scripts/feeds install -a -f
         free -h
 
     - name: 加载自定义 configuration
       run: |
         cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
-        #$GITHUB_WORKSPACE/$DIY_P2_SH
+        $GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
         df -hT && ls && free -m && ls openwrt
 
