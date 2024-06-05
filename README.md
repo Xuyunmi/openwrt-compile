@@ -18,3 +18,5 @@
 - kernel: 5_
 
 - 登陆信息: 192.168.5.1  password
+
+- https://github.com/ipatpat/xiaomi_R3G_Openwrt
