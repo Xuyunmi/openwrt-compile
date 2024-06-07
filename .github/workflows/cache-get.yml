@@ -128,7 +128,7 @@ jobs:
       run: |
         cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
-        $GITHUB_WORKSPACE/$DIY_P2_SH
+        #$GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
         df -hT && ls && free -m && ls openwrt
 
@@ -136,8 +136,8 @@ jobs:
       id: package
       run: |
         cd openwrt
-        #cp -f $GITHUB_WORKSPACE/extra/mac80211.sh package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
-        #cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/telephony/freeswitch/Makefile
+        cp -f $GITHUB_WORKSPACE/extra/mac80211.sh package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
+        cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/telephony/freeswitch/Makefile
         make defconfig
         make download -j4
         #find dl -size -1024c -exec ls -l {} \;
