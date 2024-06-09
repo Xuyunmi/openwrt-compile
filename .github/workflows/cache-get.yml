@@ -169,6 +169,8 @@ jobs:
       run: |
        df -hT
        cp $GITHUB_WORKSPACE/Openwrt.info ./openwrt/bin/Openwrt.info
+       cp ./openwrt/feeds.conf.default ./openwrt/bin/feeds.conf.default
+       cp ./openwrt/.config ./openwrt/bin/config.txt
        cd openwrt/bin/targets/*/*/ && ls
        echo "VERSION_INFO=$(cat *.manifest |grep -o "kernel.*")" >> $GITHUB_ENV
 
