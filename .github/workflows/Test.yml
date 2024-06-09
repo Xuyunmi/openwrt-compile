@@ -1,4 +1,4 @@
-name: Test
+name: Upload cache Bin
 
 on:
  # repository_dispatch:
@@ -55,7 +55,7 @@ jobs:
         sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /etc/mysql /etc/php
         sudo docker image prune --all --force
         sudo -E apt-get -qq update
-        sudo apt install -y build-essential wget tar zstd
+        sudo apt install -y wget tar zstd
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
         echo "Compile_Date=$(date +%Y%m%d%H%M)" > $GITHUB_WORKSPACE/Openwrt.info
@@ -76,7 +76,7 @@ jobs:
     - name: 压缩
       run: |
         cd /workdir && ls -lh
-        tar -zcvf openwrt.tar.gz openwrt
+        tar -zcf openwrt.tar.gz openwrt
         ls -lh
 
     - name: 上传 bin
