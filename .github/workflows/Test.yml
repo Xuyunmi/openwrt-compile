@@ -1,4 +1,4 @@
-name: Upload cache Bin
+name: Test
 
 on:
  # repository_dispatch:
