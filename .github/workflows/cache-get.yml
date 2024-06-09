@@ -136,7 +136,7 @@ jobs:
       id: package
       run: |
         cd openwrt
-        cp -f $GITHUB_WORKSPACE/extra/mac80211.sh package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
+        #cp -f $GITHUB_WORKSPACE/extra/mac80211.sh package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
         #cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/telephony/freeswitch/Makefile
         make defconfig
         make download -j4
