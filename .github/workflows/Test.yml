@@ -6,13 +6,13 @@ on:
     inputs:
       FEEDS_CONF:
         description: 'Feeds [必选]'
-        default: 'feeds.conf.default.ufi'
+        default: 'feeds.conf.default'
       CONFIG_FILE:
         description: '调用的 [.config] 文件名称'
-        default: 'mf601'
+        default: 'r3g'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
-        default: 'lkiuyu/openwrt-ufi:main'
+        default: 'coolsnowwolf/lede:master'
   #schedule:
   #- cron: 15 10 */1  * *
 
@@ -56,6 +56,12 @@ jobs:
         sudo docker image prune --all --force
         sudo -E apt-get -qq update
         sudo apt install -y build-essential wget tar zstd
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+        echo "Compile_Date=$(date +%Y%m%d%H%M)" > $GITHUB_WORKSPACE/Openwrt.info
+        echo "Display_Date=$(date +%Y/%m/%d)" >> $GITHUB_WORKSPACE/Openwrt.info
+        echo "Openwrt_Repository=$REPO_URL" >> $GITHUB_WORKSPACE/Openwrt.info
+        ls && df -h
 
     - name: 缓存编译
       id: cachebuild
