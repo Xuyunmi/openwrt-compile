@@ -133,8 +133,16 @@ CONFIG_boost-compile-visibility-hidden=y
 CONFIG_boost-runtime-shared=y
 CONFIG_boost-static-and-shared-libs=y
 CONFIG_boost-variant-release=y
+CONFIG_PACKAGE_kmod-crypto-crc32c=y
+CONFIG_PACKAGE_kmod-lib-crc32c=y
+CONFIG_PACKAGE_kmod-nf-log6=y
+CONFIG_PACKAGE_kmod-nf-reject6=y
+CONFIG_PACKAGE_kmod-nft-core=y
 CONFIG_PACKAGE_kmod-nft-tproxy=y
+CONFIG_PACKAGE_libuuid=y
 CONFIG_PACKAGE_luci-app-v2raya=y
 CONFIG_PACKAGE_luci-i18n-v2raya-zh-cn=y
 CONFIG_PACKAGE_miniupnpd=y
 CONFIG_PACKAGE_v2raya=y
+CONFIG_PACKAGE_xray-core=y
+
