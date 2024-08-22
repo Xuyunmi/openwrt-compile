@@ -96,7 +96,6 @@ CONFIG_PACKAGE_luci-app-diskman=y
 CONFIG_PACKAGE_luci-app-diskman_INCLUDE_lsblk=y
 CONFIG_PACKAGE_luci-app-hd-idle=y
 CONFIG_PACKAGE_luci-app-minidlna=y
-CONFIG_PACKAGE_luci-app-openclash=y
 CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_IPT2Socks=y
 CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Trojan=y
 CONFIG_PACKAGE_luci-app-store=y
