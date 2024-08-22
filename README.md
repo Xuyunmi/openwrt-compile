@@ -1,10 +1,5 @@
 ## 主用openwrt 在线编译
 
-- CR660X  X86_64
-
-- 使用 GitHub Actions 编译openwrt
-
-
 ## openwrt diy
 - find ./feeds/ -name "*theme-argon*" | xargs rm -rf
 
