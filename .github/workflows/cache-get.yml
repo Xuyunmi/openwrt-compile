@@ -111,7 +111,6 @@ jobs:
         #./openwrt/scripts/feeds update -a -f
         chmod +x $DIY_P1_SH
         #$GITHUB_WORKSPACE/$DIY_P1_SH
-        rm -rf ./openwrt/feeds/packages/net/adguardhome
 
  
     - name: 安装 feeds
