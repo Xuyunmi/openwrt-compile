@@ -22,6 +22,13 @@
 #echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
 
+git clone  https://github.com/bigbugcc/OpenwrtApp package/OpenwrtApp
+git clone  https://github.com/destan19/OpenAppFilter package/OpenAppFilter
+#git clone  https://github.com/zzsj0928/luci-app-pushbot package/luci-app-pushbot
+# vssr
+git clone https://github.com/jerrykuku/lua-maxminddb.git package/lua-maxminddb
+git clone https://github.com/jerrykuku/luci-app-vssr.git package/luci-app-vssr
+
 #替换主题
 #ls -l && cd openwrt && ls -a -l -h
      #   find ./feeds/ -name "*vlmcsd*" | xargs rm -rf
