@@ -83,7 +83,7 @@ jobs:
         cp -f $FEEDS_CONF openwrt/feeds.conf.default
         ./openwrt/scripts/feeds update -a
         chmod +x $DIY_P1_SH
-        $GITHUB_WORKSPACE/$DIY_P1_SH
+        #$GITHUB_WORKSPACE/$DIY_P1_SH
 
  
     - name: 安装 feeds
