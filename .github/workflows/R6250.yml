@@ -72,7 +72,7 @@ jobs:
       working-directory: /workdir
       run: |
         df -hT $PWD
-        git clone -b $REPO_BRANCH f3df2a6 $REPO_URL openwrt
+        git clone -b $REPO_BRANCH $REPO_URL openwrt
         cd openwrt
         git checkout f3df2a6
         cd ..
