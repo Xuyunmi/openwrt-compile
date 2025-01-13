@@ -149,9 +149,9 @@ jobs:
         #make toolchain/compile -j$(nproc) 
         #make -j$(nproc) 
         make target/compile -j4
-        make package/compile -j4
+        make package/compile -j4 V=s
         make package/index
-        make package/install -j4
+        make package/install -j4 V=s
         make target/install -j4
         make json_overview_image_info
         make checksum
