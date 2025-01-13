@@ -9,7 +9,7 @@ on:
         default: 'feeds.conf.default.openwrt'
       CONFIG_FILE:
         description: '调用的 [.config] 文件名称'
-        default: 'r3g'
+        default: 'r3g.op'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
         default: 'openwrt/openwrt:main'
@@ -137,8 +137,8 @@ jobs:
         #cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/telephony/freeswitch/Makefile
         make defconfig
         make download -j4
-        find dl -size -1024c -exec ls -l {} \;
-        find dl -size -1024c -exec rm -f {} \;
+        #find dl -size -1024c -exec ls -l {} \;
+        #find dl -size -1024c -exec rm -f {} \;
 
 
     - name: 编译固件
