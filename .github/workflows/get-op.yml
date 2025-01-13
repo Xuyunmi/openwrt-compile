@@ -89,7 +89,7 @@ jobs:
         #cache-name: cache-openwrt-lede
       with:
         path: /workdir/openwrt
-        key: ${{env.DEFAULT_SOURCE}}-${{env.CONFIG_FILE}}
+        key: ${{env.DEFAULT_SOURCE}}
         restore-keys: ${{env.CONFIG_FILE}}
         
         
