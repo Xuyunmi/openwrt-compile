@@ -12,7 +12,7 @@ on:
         default: 'r3g'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
-        default: 'coolsnowwolf/lede:master'
+        default: 'bigDshe/lede-my:main'
   #schedule:
   #- cron: 15 */8 * * *
 
