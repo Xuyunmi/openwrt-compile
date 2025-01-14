@@ -98,6 +98,9 @@ jobs:
       run: |
         df -hT $PWD
         #git clone -b $REPO_BRANCH $REPO_URL openwrt
+        cd openwrt
+        git checkout
+        cd ..
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
         cd ./openwrt
