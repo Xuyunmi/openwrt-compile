@@ -19,9 +19,9 @@ sed -i '/encryption/a\set wireless.default_radio${devidx}.key=13572468' openwrt/
 
 #切换ramips内核到5.4/5.10并超频
 #sed -i '/KERNEL_PATCHVER/cKERNEL_PATCHVER:=5.10' openwrt/target/linux/bcm53xx/Makefile
-sed -i '/KERNEL_PATCHVER/cKERNEL_PATCHVER:=5.10' openwrt/target/linux/ramips/Makefile
+#sed -i '/KERNEL_PATCHVER/cKERNEL_PATCHVER:=5.10' openwrt/target/linux/ramips/Makefile
 #cp -f extra/102-mt7621-fix-cpu-clk-add-clkdev.patch openwrt/target/linux/ramips/patches-5.4/102-mt7621-fix-cpu-clk-add-clkdev.patch
-cp -f extra/322-mt7621-fix-cpu-clk-add-clkdev.patch openwrt/target/linux/ramips/patches-5.10/322-mt7621-fix-cpu-clk-add-clkdev.patch
+#cp -f extra/322-mt7621-fix-cpu-clk-add-clkdev.patch openwrt/target/linux/ramips/patches-5.10/322-mt7621-fix-cpu-clk-add-clkdev.patch
 
 #更换banner
 cp -rf banner openwrt/package/base-files/files/etc/banner
