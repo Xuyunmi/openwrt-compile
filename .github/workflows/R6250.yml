@@ -73,9 +73,6 @@ jobs:
       run: |
         df -hT $PWD
         git clone -b $REPO_BRANCH $REPO_URL openwrt
-        cd openwrt
-        git checkout f4405a9597eea92622b66f122de2fb738a605d5d
-        cd ..
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
         cd ./openwrt
