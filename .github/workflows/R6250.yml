@@ -76,11 +76,11 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
         cd ./openwrt
-        #rm -rf /workdir/openwrt/feeds.conf.default
+        rm -rf /workdir/openwrt/feeds.conf.default
 
     - name: 更新 feeds
       run: |
-        #cp -f $FEEDS_CONF openwrt/feeds.conf.default
+        cp -f $FEEDS_CONF openwrt/feeds.conf.default
         ./openwrt/scripts/feeds update -a
         chmod +x $DIY_P1_SH
         #$GITHUB_WORKSPACE/$DIY_P1_SH
@@ -98,7 +98,7 @@ jobs:
       run: |
         cp $GITHUB_WORKSPACE/Configs/$CONFIG_FILE openwrt/.config
         chmod +x $DIY_P2_SH
-        #$GITHUB_WORKSPACE/$DIY_P2_SH
+        $GITHUB_WORKSPACE/$DIY_P2_SH
         echo -e "*********$(nproc) 线程服务器*****" && cat /proc/cpuinfo
         df -hT && ls && free -m && ls openwrt
 
@@ -108,8 +108,8 @@ jobs:
         cd openwrt
         make defconfig
         make download -j4
-        find dl -size -1024c -exec ls -l {} \;
-        find dl -size -1024c -exec rm -f {} \;
+        #find dl -size -1024c -exec ls -l {} \;
+        #find dl -size -1024c -exec rm -f {} \;
 
 
     - name: 编译固件
