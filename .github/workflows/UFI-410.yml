@@ -110,8 +110,8 @@ jobs:
         #cp -f $GITHUB_WORKSPACE/extra/Makefile package/feeds/telephony/freeswitch/Makefile
         make defconfig
         make download -j4
-        find dl -size -1024c -exec ls -l {} \;
-        find dl -size -1024c -exec rm -f {} \;
+        #find dl -size -1024c -exec ls -l {} \;
+        #find dl -size -1024c -exec rm -f {} \;
 
 
     - name: 编译固件
