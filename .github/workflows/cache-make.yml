@@ -12,7 +12,7 @@ on:
         default: 'r3g'
       DEFAULT_SOURCE:
         description: '源码:分支 [必选]'
-        default: 'bigDshe/lede-my:main'
+        default: 'coolsnowwolf/lede:master'
   #schedule:
   #- cron: 15 */8 * * *
 
@@ -84,13 +84,12 @@ jobs:
         git clone -b $REPO_BRANCH $REPO_URL openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         ls -alh
-        #rm -rf /workdir/openwrt/feeds.conf.default
+        rm -rf /workdir/openwrt/feeds.conf.default
         ls -lah ./openwrt
-        #git pull
 
     - name: 更新 feeds
       run: |
-        #cp -f $FEEDS_CONF openwrt/feeds.conf.default
+        cp -f $FEEDS_CONF openwrt/feeds.conf.default
         ./openwrt/scripts/feeds update -a
         chmod +x $DIY_P1_SH
         #$GITHUB_WORKSPACE/$DIY_P1_SH
@@ -118,8 +117,8 @@ jobs:
         cd openwrt
         make defconfig
         make download -j4
-        find dl -size -1024c -exec ls -l {} \;
-        find dl -size -1024c -exec rm -f {} \;
+        #find dl -size -1024c -exec ls -l {} \;
+        #find dl -size -1024c -exec rm -f {} \;
 
 
     - name: 编译固件
